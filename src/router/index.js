@@ -1,9 +1,8 @@
-// import vm from "@/main";
 import VueRouter from 'vue-router'
 import Vue from "vue";
 import store from "@/store"
 
-import catalog_routes from "@/router/catalog";
+import shop_routes from "@/router/shop";
 import auth_routes from "@/router/auth";
 import main_routes from "@/router/main";
 import service_routes from "@/router/service";
@@ -15,7 +14,7 @@ const router = new VueRouter({
   mode: 'history',
   routes: [
       ...main_routes,
-      ...catalog_routes,
+      ...shop_routes,
 
       ...auth_routes,
       ...service_routes,

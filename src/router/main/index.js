@@ -4,7 +4,7 @@ const main_routes = [
     {
         path: '/',
         name: 'main',
-        redirect: { name: 'main-catalog'},
+        redirect: { name: 'shop'},
     },
 ];
 
