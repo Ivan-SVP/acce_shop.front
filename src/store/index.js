@@ -1,9 +1,7 @@
-import Vue from 'vue'
 import Vuex from 'vuex'
 import auth from './modules/auth';
+import catalog from './modules/catalog/index';
 
-
-Vue.use(Vuex);
 
 export default new Vuex.Store({
   state: {
@@ -14,6 +12,7 @@ export default new Vuex.Store({
   },
   modules: {
     auth,
+    catalog,
   },
   getters: {
   }

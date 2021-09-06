@@ -3,9 +3,9 @@
     <!--        header-->
     <Header/>
     <!--    content-->
-    <div class="container">
-        <router-view/>
-    </div>
+
+    <router-view/>
+
     <!--        footer-->
     <Footer/>
   </div>

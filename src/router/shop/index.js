@@ -1,21 +1,26 @@
-
 const shop_routes = [
     {
-        path: '/shop',
+        path: '/',
         name: 'shop',
-        meta: {'layout': 'shop'},
-        component: {
-            render: (c) => c('router-view'),
-        },
-        redirect: { name: 'main-catalog'},
+        meta: {'layout': 'main'},
+        component: () => import('../../views/shop/BaseShop.vue'),
+        redirect: {name: 'main-catalog'},
         children: [
             {
                 path: 'catalog',
                 name: 'main-catalog',
                 component: () => import('../../views/shop/MainCatalog'),
             },
+            {
+                path: 'catalog/:slug',
+                name: 'product-detail',
+                component: () => import('../../views/shop/MainCatalog'),
+            },
+
         ],
     },
+
+
 ];
 
 

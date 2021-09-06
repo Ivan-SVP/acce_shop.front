@@ -2,8 +2,7 @@
 
 const service_routes = [
     {
-        path: "/page-not-found",
-        alias: '*',
+        path: "/:catchAll(.*)",
         component: { render: (h) => h("div", ["404! Page Not Found!"]) },
     },
 ];

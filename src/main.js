@@ -1,20 +1,13 @@
-import Vue from 'vue'
+import { createApp } from 'vue'
 import App from './App.vue'
-import router from './router'
 import store from './store'
-import AsyncComputed from 'vue-async-computed'
+import router from "./router";
 
-import 'bootstrap/dist/js/bootstrap.min'
+let app = createApp(App)
 
+app.use(router);
+app.use(store);
 
-Vue.config.productionTip = false;
-Vue.use(AsyncComputed)
+router.isReady().then(() => app.mount('#app'))
 
-
-const vm = new Vue({
-  router,
-  store,
-  render: h => h(App)
-}).$mount('#app');
-
-export default vm
+export default app

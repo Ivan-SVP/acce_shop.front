@@ -1,24 +1,18 @@
-import VueRouter from 'vue-router'
-import Vue from "vue";
-import store from "@/store"
-
-import shop_routes from "@/router/shop";
-import auth_routes from "@/router/auth";
-import main_routes from "@/router/main";
-import service_routes from "@/router/service";
+import { createRouter, createWebHistory } from 'vue-router'
+import store from "../store"
+import shop_routes from "../router/shop";
+import auth_routes from "../router/auth";
+import service_routes from "../router/service";
 
 
-Vue.use(VueRouter);
+const router = createRouter({
+    history: createWebHistory(),
+    routes: [
+        ...shop_routes,
 
-const router = new VueRouter({
-  mode: 'history',
-  routes: [
-      ...main_routes,
-      ...shop_routes,
-
-      ...auth_routes,
-      ...service_routes,
-  ]
+        ...auth_routes,
+        ...service_routes,
+    ]
 });
 
 

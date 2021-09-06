@@ -314,7 +314,7 @@
         //     return {
         //         navLinks: [
         //             {title: 'Главная', url: '/', exact: true},
-        //             {title: 'Кабинет', url: '/catalog'},
+        //             {title: 'Кабинет', url: '/shop'},
         //         ]
         //     }
         // }

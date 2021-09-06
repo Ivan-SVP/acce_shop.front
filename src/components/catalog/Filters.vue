@@ -5,27 +5,30 @@
 
       <!-- shop-sidebar start -->
       <div class="shop-sidebar mb-30">
-        <h4 class="title">FILTER BY PRICE</h4>
+        <h4 class="title">ФИЛЬТР ПО ЦЕНЕ</h4>
         <!-- filter-price-content start -->
         <div class="filter-price-content">
-          <form action="#" method="post">
-            <div id="price-slider" class="price-slider"></div>
-            <div class="filter-price-wapper">
-              <div class="filter-price-cont">
-                <span>Price:</span>
-                <div class="input-type">
-                  <input type="text" id="min-price" readonly="" />
-                </div>
-                <span>—</span>
-                <div class="input-type">
-                  <input type="text" id="max-price" readonly="" />
-                </div>
-                <a class="add-to-cart-button" href="#">
-                  <span>FILTER</span>
-                </a>
+          <div class="price-slider mb-20">
+            <vue-slider v-model="priceRange"
+                        :lazy="true"
+                        :min=productFilters.minPrice
+                        :max=productFilters.maxPrice
+            />
+          </div>
+          <div class="filter-price-wapper">
+            <div class="filter-price-cont">
+              <div class="input-type">
+                <input type="text" :value="priceRange[0]" readonly/>
               </div>
+              <span>—</span>
+              <div class="input-type">
+                <input type="text"  :value="priceRange[1]" readonly/>
+              </div>
+              <a class="add-to-cart-button price-range-btn" @click="applyFilters()" href="#">
+                <span>FILTER</span>
+              </a>
             </div>
-          </form>
+          </div>
         </div>
         <!-- filter-price-content end -->
       </div>
@@ -33,105 +36,15 @@
 
       <!-- shop-sidebar start -->
       <div class="shop-sidebar mb-30">
-        <h4 class="title">CATEGORIES</h4>
+        <h4 class="title">КАТЕГОРИИ</h4>
         <ul>
-          <li><a href="shop.html">brothers <span>(18)</span></a></li>
-          <li><a href="shop.html">hatil <span>(16)</span></a></li>
-          <li><a href="shop.html">Men <span>(6)</span></a></li>
-          <li><a href="shop.html">Women <span>(11)</span></a></li>
+          <li v-for="category in categoryList" :key="category.slug"
+              :class="category.slug === productFilters.category ? 'active' : ''">
+            <a @click.prevent="setFilters({'category': category.slug})">{{ category.title }}
+              <span>{{ category.products_count }}</span>
+            </a>
+          </li>
         </ul>
-      </div>
-      <!-- shop-sidebar end -->
-
-
-      <!-- shop-sidebar start -->
-      <div class="sidbar-product shop-sidebar mb-30">
-        <h4 class="title">best product</h4>
-        <!-- sidbar-product-inner start -->
-        <div class="sidbar-product-inner">
-          <div class="product-image">
-            <a href="product-details.html"><img src="assets/images/product/product-01.jpg" alt=""></a>
-          </div>
-          <div class="product-content text-left">
-            <h3><a href="product-details.html">Products Name 003</a></h3>
-            <div class="price-box">
-              <span class="old-price">11.00</span>
-              <span class="new-price">10.00</span>
-            </div>
-          </div>
-        </div>
-        <!-- sidbar-product-inner end -->
-        <!-- sidbar-product-inner start -->
-        <div class="sidbar-product-inner">
-          <div class="product-image">
-            <a href="product-details.html"><img src="assets/images/product/product-10.jpg" alt=""></a>
-          </div>
-          <div class="product-content text-left">
-            <h3><a href="product-details.html">Products Name 011</a></h3>
-            <div class="price-box">
-              <span class="old-price">18.00</span>
-              <span class="new-price">14.00</span>
-            </div>
-          </div>
-        </div>
-        <!-- sidbar-product-inner end -->
-        <!-- sidbar-product-inner start -->
-        <div class="sidbar-product-inner">
-          <div class="product-image">
-            <a href="product-details.html"><img src="assets/images/product/product-04.jpg" alt=""></a>
-          </div>
-          <div class="product-content text-left">
-            <h3><a href="product-details.html">Products Name 008</a></h3>
-            <div class="price-box">
-
-              <span class="old-price">19.00</span>
-              <span class="new-price">16.00</span>
-            </div>
-          </div>
-        </div>
-        <!-- sidbar-product-inner end -->
-      </div>
-      <!-- shop-sidebar end -->
-
-      <!-- shop-sidebar start -->
-      <div class="shop-sidebar mb-30">
-        <h4 class="title">Color</h4>
-        <ul>
-          <li><a href="shop.html">Red <span>(18)</span></a></li>
-          <li><a href="shop.html">Green <span>(16)</span></a></li>
-          <li><a href="shop.html">Blue <span>(6)</span></a></li>
-          <li><a href="shop.html">Yellow <span>(11)</span></a></li>
-          <li><a href="shop.html">White <span>(11)</span></a></li>
-        </ul>
-      </div>
-      <!-- shop-sidebar end -->
-
-      <!-- shop-sidebar start -->
-      <div class="shop-sidebar mb-30">
-        <h4 class="title">SIZE</h4>
-        <ul>
-          <li><a href="shop.html">S <span>(11)</span></a></li>
-          <li><a href="shop.html">M <span>(13)</span></a></li>
-          <li><a href="shop.html">L <span>(6)</span></a></li>
-          <li><a href="shop.html">XLL <span>(51)</span></a></li>
-          <li><a href="shop.html">XXL <span>(3)</span></a></li>
-        </ul>
-      </div>
-      <!-- shop-sidebar end -->
-
-      <!-- shop-sidebar start -->
-      <div class="shop-sidebar">
-        <h4 class="title">Hot Tags</h4>
-        <div class="sidebar-tag">
-          <a href="#">Red</a>
-          <a href="#">Blue</a>
-          <a href="#">Man</a>
-          <a href="#">White</a>
-          <a href="#">Yellow</a>
-          <a href="#">Digital</a>
-          <a href="#">Women</a>
-          <a href="#">Evergreen</a>
-        </div>
       </div>
       <!-- shop-sidebar end -->
     </div>
@@ -140,11 +53,69 @@
 </template>
 
 <script>
-export default {
-  name: "Filters"
-}
+  import mainApi from "../../api/main_server/endpoints/root";
+  import {useStore} from 'vuex';
+  import {computed} from "vue";
+  import VueSlider from 'vue-slider-component'
+  import 'vue-slider-component/theme/antd.css'
+
+  export default {
+    name: "Filters",
+    data() {
+      return {
+        categoryList: [],
+      }
+    },
+    mounted: async function() {
+      await mainApi.getCategoryList()
+          .then(res => {
+            this.categoryList = res.data.results;
+          });
+    },
+    components: {
+      VueSlider
+    },
+
+    setup() {
+      const store = useStore()
+
+      let productFilters = computed(() => store.getters["catalog/filters/getFilters"])
+      const setFilters = (filters) => store.dispatch('catalog/filters/setFilters', filters)
+
+      let priceRange = computed({
+            get() {
+              return [productFilters.value.priceFrom, productFilters.value.priceTo]
+            },
+            set(newRange) {
+              store.commit("catalog/filters/setFilters", {
+                'priceFrom': newRange[0],
+                'priceTo': newRange[1],
+              })
+            }
+          }
+      )
+
+      const applyFilters = () => store.dispatch('catalog/productList/getProductList')
+
+      return {
+        productFilters,
+        setFilters,
+        priceRange,
+        applyFilters,
+      }
+    }
+  }
 </script>
 
 <style scoped>
-
+  .filter-price-cont{
+    margin-right: 60px;
+  }
+  .filter-price-cont .input-type input {
+    width: 80px;
+  }
+  .price-range-btn{
+    position: absolute;
+    right: 0;
+  }
 </style>

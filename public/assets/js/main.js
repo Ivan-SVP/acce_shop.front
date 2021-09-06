@@ -434,23 +434,6 @@ $('.horizantal-product-active').slick({
 $('.horizantal-product-active a').on('click', function () {
     $('.horizantal-product-active a').removeClass('active');
 });
-    
-/*----------
-    price-slider active
--------------------------------*/  
-$( "#price-slider" ).slider({
-   range: true,
-   min: 0,
-   max: 120,
-   values: [ 20, 115 ],
-   slide: function( event, ui ) {
-        $( "#min-price" ).val('$' + ui.values[ 0 ] );
-        $( "#max-price" ).val('$' + ui.values[ 1 ] );
-     }
-  });
-  $( "#min-price" ).val('$' + $( "#price-slider" ).slider( "values", 0 ));   
-  $( "#max-price" ).val('$' + $( "#price-slider" ).slider( "values", 1 )); 
-    
 
 /*--
     showlogin toggle function
