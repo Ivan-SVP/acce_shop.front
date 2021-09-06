@@ -20,7 +20,7 @@ const getters = {
     },
     getFiltersBack: state => {  // для запросав на бэк
         return {
-            'category': state.category,
+            'category__slug': state.category,
             'price__gte': state.priceFrom,
             'price__lt': state.priceTo,
         }
