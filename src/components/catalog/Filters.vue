@@ -4,7 +4,8 @@
     <div class="shop-sidebar-wrap">
 
       <!-- shop-sidebar start -->
-      <div class="shop-sidebar mb-30">
+      <div v-if="priceRange[0] && priceRange[1]"
+           class="shop-sidebar mb-30">
         <h4 class="title">ФИЛЬТР ПО ЦЕНЕ</h4>
         <!-- filter-price-content start -->
         <div class="filter-price-content">
@@ -13,6 +14,7 @@
                         :lazy="true"
                         :min=productFilters.minPrice
                         :max=productFilters.maxPrice
+                        :silent="true"
             />
           </div>
           <div class="filter-price-wapper">
@@ -69,7 +71,7 @@
     mounted: async function() {
       await mainApi.getCategoryList()
           .then(res => {
-            this.categoryList = res.data.results;
+            this.categoryList = res.data;
           });
     },
     components: {

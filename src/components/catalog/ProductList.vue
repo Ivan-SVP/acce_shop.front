@@ -93,7 +93,6 @@
   import {computed, ref} from "vue";
   import ProductListPaginator from './ProductListPaginator'
 
-
   export default {
     name: "ProductList",
     components: {
@@ -102,7 +101,7 @@
     setup() {
       const store = useStore()
 
-      store.dispatch('catalog/productList/getProductList')
+      store.dispatch('catalog/productList/getProductList', {'updatePriceRange': true})
 
       let productList = computed(() => store.getters["catalog/productList/getProductList"]);
 

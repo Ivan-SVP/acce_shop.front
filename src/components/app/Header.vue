@@ -108,7 +108,9 @@
           <div class="col-lg-2 col-md-8 col-7">
             <div class="right-blok-box d-flex">
               <div class="search-wrap">
-                <a href="#" class="trigger-search"><i class="ion-ios-search-strong"></i></a>
+                <a href="#" :class="'trigger-search' + (searchText ? ' active' : '')">
+                  <i class="ion-ios-search-strong"></i>
+                </a>
               </div>
 
               <div class="user-wrap">
@@ -178,14 +180,17 @@
         <button class="search-close"><span class="ion-android-close"></span></button>
       </div>
       <div class="sidebar-search-input">
-        <form>
-          <div class="form-search">
-            <input id="search" class="input-text" value="" placeholder="Search entire store here ..." type="search">
-            <button class="search-btn" type="button">
-              <i class="ion-ios-search"></i>
-            </button>
-          </div>
-        </form>
+        <div class="form-search">
+          <input v-model="searchText"
+                 @change="search()"
+                 class="input-text"
+                 placeholder="Введите поисковый запрос здесь ..."
+                 type="search"
+          >
+          <button class="search-btn" type="button">
+            <i class="ion-ios-search"></i>
+          </button>
+        </div>
       </div>
     </div>
     <!-- main-search start -->
@@ -295,6 +300,10 @@
 </template>
 
 <script>
+    import $ from 'jquery'
+    import {ref} from "vue";
+    import {useStore} from "vuex";
+
     export default {
         name: "Header",
         // computed: {
@@ -318,7 +327,46 @@
         //         ]
         //     }
         // }
+      mounted() {
+
+        /*--
+         Sidebar Search Active
+        -----------------------------*/
+        function sidebarSearch() {
+          var searchTrigger = $('.trigger-search'),
+              endTriggersearch = $('button.search-close'),
+              container = $('.main-search-active');
+
+          searchTrigger.on('click', function () {
+            container.addClass('inside');
+          });
+
+          endTriggersearch.on('click', function () {
+            container.removeClass('inside');
+          });
+
+        }
+
+        sidebarSearch();
+      },
+      setup() {
+        const store = useStore()
+
+        let searchText = ref('');
+
+        const search = function () {
+          store.commit("catalog/filters/setFilters", {'searchText': searchText.value})
+          store.dispatch('catalog/productList/getProductList')
+          $('.main-search-active').removeClass('inside')
+        };
+
+        return {
+          searchText,
+          search
+        }
+      }
     }
+
 </script>
 
 <style scoped>

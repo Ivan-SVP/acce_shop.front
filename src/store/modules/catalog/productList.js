@@ -30,33 +30,45 @@ const getters = {
 }
 
 const actions = {
-    async getProductList({commit, state, rootGetters}) {
+    async getProductList({commit, state, rootGetters}, extra={}) {
+        let requestParams = {
+            'ordering': state.sortBy,
+            'page_size': state.paginator.page_size,
+            'page': state.paginator.currentPage,
+            ...rootGetters["catalog/filters/getFiltersBack"]
+        }
+
+        if (extra && extra['updatePriceRange']) {
+            requestParams['update_price_range'] = true
+        }
+
         await mainApi.getProductList(
-            {
-                'ordering': state.sortBy,
-                'page_size': state.paginator.page_size,
-                'page': state.paginator.currentPage,
-                ...rootGetters["catalog/filters/getFiltersBack"]
-            },
+            requestParams
         )
             .then(res => {
                 commit('setProductList', res.data.results);
+
                 commit('updatePaginator', {
                     'count': res.data.count,
                     'page_size': res.data.page_size,
                 });
 
-                let filtersForUpdate = {
-                    'minPrice': res.data.min_price || 0,
-                    'maxPrice': res.data.max_price || 0,
+                if (extra && extra['updatePriceRange']) {
+                    if (typeof res.data.min_price == 'number' && typeof res.data.max_price == 'number') {
+                        let currentFilters = rootGetters["catalog/filters/getFilters"]
+                        let filtersForUpdate = {
+                            'minPrice': res.data.min_price,
+                            'maxPrice': res.data.max_price,
+                        }
+                        if (!currentFilters.priceFrom || filtersForUpdate.maxPrice < currentFilters.priceFrom < filtersForUpdate.minPrice) {
+                            filtersForUpdate['priceFrom'] = filtersForUpdate.minPrice
+                        }
+                        if (!currentFilters.priceTo || filtersForUpdate.maxPrice < currentFilters.priceTo < filtersForUpdate.minPrice) {
+                            filtersForUpdate['priceTo'] = filtersForUpdate.maxPrice
+                        }
+                        commit('catalog/filters/setFilters', filtersForUpdate, {root: true})
+                    }
                 }
-                if (state.priceFrom < filtersForUpdate.min_price) {
-                    filtersForUpdate['priceFrom'] = filtersForUpdate.minPrice
-                }
-                if (!state.priceTo || state.priceTo > filtersForUpdate) {
-                    filtersForUpdate['priceTo'] = filtersForUpdate.maxPrice
-                }
-                commit('catalog/filters/setFilters', filtersForUpdate, {root: true})
             })
             .catch(() => {
                 commit('setProductList', []);
