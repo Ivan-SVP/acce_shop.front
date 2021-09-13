@@ -1,14 +1,17 @@
+const getDefaultState = () => {
+    return {
+        category: 'category-1',
 
-const state = () => ({
-    category: 'category-1',
+        minPrice: null,  // границы слайдера цен
+        maxPrice: null,
+        priceFrom: null,  // выбранный на слайдере диапазон
+        priceTo: null,
 
-    minPrice: null,  // границы слайдера цен
-    maxPrice: null,
-    priceFrom: null,  // выбранный на слайдере диапазон
-    priceTo: null,
+        searchText: null
+    }
+}
 
-    searchText: null
-})
+const state = getDefaultState()
 
 const getters = {
     getFilters: state => {
@@ -29,6 +32,13 @@ const getters = {
             'search': state.searchText,
         }
     },
+    isFiltered: state => {
+        return (
+            (state.priceFrom && state.priceFrom > state.minPrice) ||
+            (state.priceTo && state.priceTo < state.maxPrice) ||
+            state.searchText
+        )
+    },
 }
 
 const actions = {
@@ -47,17 +57,22 @@ const actions = {
 
         this.dispatch('catalog/productList/getProductList', params)
     },
+    cleanFilters ({commit}) {
+        commit("cleanFilters")
+
+        let params = {'updatePriceRange': true}
+        this.dispatch('catalog/productList/getProductList', params)
+    },
 }
 
 const mutations = {
-    setFilters (state, payload) {
-        if (payload.maxPrice && typeof payload.maxPrice == 'number') {
-            payload.maxPrice++
-        }
-        console.log(payload)
-        Object.keys(payload).forEach(function(key) {
+    setFilters(state, payload) {
+        Object.keys(payload).forEach(function (key) {
             state[key] = payload[key]
         });
+    },
+    cleanFilters(state) {
+        Object.assign(state, getDefaultState())
     },
 }
 

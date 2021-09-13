@@ -301,7 +301,7 @@
 
 <script>
     import $ from 'jquery'
-    import {ref} from "vue";
+    import {computed} from "vue";
     import {useStore} from "vuex";
 
     export default {
@@ -352,17 +352,25 @@
       setup() {
         const store = useStore()
 
-        let searchText = ref('');
+        let searchTextRef = '';
+        let searchText = computed({
+              get() {
+                return store.getters["catalog/filters/getFilters"].searchText
+              },
+              set(newValue) {
+                searchTextRef = newValue;
+              }
+            }
+        )
 
         const search = function () {
-          store.commit("catalog/filters/setFilters", {'searchText': searchText.value})
-          store.dispatch('catalog/productList/getProductList')
+          store.dispatch("catalog/filters/setFilters", {'searchText': searchTextRef})
           $('.main-search-active').removeClass('inside')
         };
 
         return {
           searchText,
-          search
+          search,
         }
       }
     }

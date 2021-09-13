@@ -4,6 +4,30 @@
     <div class="shop-sidebar-wrap">
 
       <!-- shop-sidebar start -->
+      <div v-if="isFiltered" class="shop-sidebar mb-30 clean-filters">
+        <h4 class="title">УБРАТЬ ФИЛЬТРЫ</h4>
+        <div class="sidebar-search-icon" @click="cleanFilters()">
+          <button class="search-close">
+            <span class="ion-android-close"></span>
+          </button></div>
+      </div>
+      <!-- shop-sidebar end -->
+
+      <!-- shop-sidebar start -->
+      <div class="shop-sidebar mb-30">
+        <h4 class="title">КАТЕГОРИИ</h4>
+        <ul>
+          <li v-for="category in categoryList" :key="category.slug"
+              :class="category.slug === productFilters.category ? 'active' : ''">
+            <a @click.prevent="setFilters({'category': category.slug})">{{ category.title }}
+              <span>{{ category.products_count }}</span>
+            </a>
+          </li>
+        </ul>
+      </div>
+      <!-- shop-sidebar end -->
+
+      <!-- shop-sidebar start -->
       <div v-if="priceRange[0] && priceRange[1]"
            class="shop-sidebar mb-30">
         <h4 class="title">ФИЛЬТР ПО ЦЕНЕ</h4>
@@ -26,7 +50,7 @@
               <div class="input-type">
                 <input type="text"  :value="priceRange[1]" readonly/>
               </div>
-              <a class="add-to-cart-button price-range-btn" @click="applyFilters()" href="#">
+              <a class="add-to-cart-button price-range-btn" @click.prevent="applyFilters()" href="#">
                 <span>FILTER</span>
               </a>
             </div>
@@ -36,19 +60,6 @@
       </div>
       <!-- shop-sidebar end -->
 
-      <!-- shop-sidebar start -->
-      <div class="shop-sidebar mb-30">
-        <h4 class="title">КАТЕГОРИИ</h4>
-        <ul>
-          <li v-for="category in categoryList" :key="category.slug"
-              :class="category.slug === productFilters.category ? 'active' : ''">
-            <a @click.prevent="setFilters({'category': category.slug})">{{ category.title }}
-              <span>{{ category.products_count }}</span>
-            </a>
-          </li>
-        </ul>
-      </div>
-      <!-- shop-sidebar end -->
     </div>
     <!-- shop-sidebar-wrap end -->
   </div>
@@ -57,7 +68,7 @@
 <script>
   import mainApi from "../../api/main_server/endpoints/root";
   import {useStore} from 'vuex';
-  import {computed} from "vue";
+  import {computed, ref} from "vue";
   import VueSlider from 'vue-slider-component'
   import 'vue-slider-component/theme/antd.css'
 
@@ -81,29 +92,34 @@
     setup() {
       const store = useStore()
 
-      let productFilters = computed(() => store.getters["catalog/filters/getFilters"])
-      const setFilters = (filters) => store.dispatch('catalog/filters/setFilters', filters)
+      let priceRange = ref([])
 
-      let priceRange = computed({
-            get() {
-              return [productFilters.value.priceFrom, productFilters.value.priceTo]
-            },
-            set(newRange) {
-              store.commit("catalog/filters/setFilters", {
-                'priceFrom': newRange[0],
-                'priceTo': newRange[1],
-              })
-            }
+      let productFilters = computed(() => {
+            let filters = store.getters["catalog/filters/getFilters"]
+            priceRange.value = [filters.priceFrom, filters.priceTo]
+            return filters
           }
       )
+      const setFilters = (filters) => store.dispatch('catalog/filters/setFilters', filters)
 
-      const applyFilters = () => store.dispatch('catalog/productList/getProductList')
+      const applyFilters = function () {
+        store.commit("catalog/filters/setFilters", {
+          'priceFrom': priceRange.value[0],
+          'priceTo': priceRange.value[1],
+        })
+        store.dispatch('catalog/productList/getProductList')
+      }
+
+      let isFiltered = computed(() => store.getters['catalog/filters/isFiltered'])
+      let cleanFilters = () => store.dispatch("catalog/filters/cleanFilters")
 
       return {
         productFilters,
         setFilters,
         priceRange,
         applyFilters,
+        isFiltered,
+        cleanFilters,
       }
     }
   }
@@ -119,5 +135,12 @@
   .price-range-btn{
     position: absolute;
     right: 0;
+  }
+
+  .clean-filters {
+    position: relative;
+  }
+  .clean-filters button {
+    color: #f85151;
   }
 </style>
