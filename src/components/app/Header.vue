@@ -355,7 +355,7 @@
         let searchTextRef = '';
         let searchText = computed({
               get() {
-                return store.getters["catalog/filters/getFilters"].searchText
+                return store.getters["catalog/productList/getFilters"].searchText
               },
               set(newValue) {
                 searchTextRef = newValue;
@@ -364,7 +364,7 @@
         )
 
         const search = function () {
-          store.dispatch("catalog/filters/setFilters", {'searchText': searchTextRef})
+          store.dispatch("catalog/productList/setFilters", {'searchText': searchTextRef})
           $('.main-search-active').removeClass('inside')
         };
 

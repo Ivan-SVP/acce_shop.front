@@ -50,7 +50,7 @@
               <div class="input-type">
                 <input type="text"  :value="priceRange[1]" readonly/>
               </div>
-              <a class="add-to-cart-button price-range-btn" @click.prevent="applyFilters()" href="#">
+              <a class="add-to-cart-button price-range-btn" @click.prevent="applyPriceRange()" href="#">
                 <span>FILTER</span>
               </a>
             </div>
@@ -68,7 +68,7 @@
 <script>
   import mainApi from "../../api/main_server/endpoints/root";
   import {useStore} from 'vuex';
-  import {computed, ref} from "vue";
+  import {computed, inject, ref} from "vue";
   import VueSlider from 'vue-slider-component'
   import 'vue-slider-component/theme/antd.css'
 
@@ -91,33 +91,32 @@
 
     setup() {
       const store = useStore()
+      const setFilters  = inject('setFilters');
 
       let priceRange = ref([])
 
       let productFilters = computed(() => {
-            let filters = store.getters["catalog/filters/getFilters"]
+            let filters = store.getters["catalog/productList/getFilters"]
             priceRange.value = [filters.priceFrom, filters.priceTo]
             return filters
           }
       )
-      const setFilters = (filters) => store.dispatch('catalog/filters/setFilters', filters)
 
-      const applyFilters = function () {
-        store.commit("catalog/filters/setFilters", {
+      const applyPriceRange = function () {
+        setFilters({
           'priceFrom': priceRange.value[0],
           'priceTo': priceRange.value[1],
         })
-        store.dispatch('catalog/productList/getProductList')
       }
 
-      let isFiltered = computed(() => store.getters['catalog/filters/isFiltered'])
-      let cleanFilters = () => store.dispatch("catalog/filters/cleanFilters")
+      let isFiltered = computed(() => store.getters['catalog/productList/isFiltered'])
+      let cleanFilters = () => store.dispatch("catalog/productList/cleanFilters")
 
       return {
         productFilters,
         setFilters,
         priceRange,
-        applyFilters,
+        applyPriceRange,
         isFiltered,
         cleanFilters,
       }

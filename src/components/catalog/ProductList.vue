@@ -19,7 +19,7 @@
             <!-- product-view-mode end -->
             <!-- product-short start -->
             <div class="product-short">
-              <select class="nice-select" v-model="sortedBy" @change="sortBy(sortedBy)">
+              <select class="nice-select" v-model="sortBy">
                 <option v-for="param in sortParams" :key="param.key" :value="param.key">
                   {{param.value}}
                 </option>
@@ -36,7 +36,7 @@
         <div class="tab-content">
           <div class="tab-pane active" id="grid">
             <div class="shop-product-wrap">
-              <div class="row">
+              <div class="row" v-if="productList.length">
                 <div class="col-lg-3 col-md-4 col-sm-6 col-"
                      v-for="product in productList"
                      :key="product.id"
@@ -73,6 +73,11 @@
                   <!-- single-product-wrap end -->
                 </div>
               </div>
+              <div class="row" v-else>
+                <div class="col-12 text-center mt-50">
+                <h5>Товары не найдены</h5>
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -90,7 +95,8 @@
 <script>
 
   import { useStore } from 'vuex';
-  import {computed, ref} from "vue";
+
+  import {computed, inject} from "vue";
   import ProductListPaginator from './ProductListPaginator'
 
   export default {
@@ -100,19 +106,25 @@
     },
     setup() {
       const store = useStore()
-
-      store.dispatch('catalog/productList/getProductList', {'updatePriceRange': true})
+      const setFilters  = inject('setFilters');
 
       let productList = computed(() => store.getters["catalog/productList/getProductList"]);
 
-      let sortedBy = ref(store.state.catalog.productList.sortBy)
-      let sortBy = (sortParam) => store.dispatch('catalog/productList/sortBy', sortParam)
+      let sortBy = computed({
+            get() {
+              return store.state.catalog.productList.sortBy
+            },
+            set(newValue) {
+              setFilters({'sortBy': newValue})
+            }
+          }
+      )
+
       let sortParams = store.getters["catalog/productList/getSortParams"];
 
       return {
         productList,
 
-        sortedBy,
         sortBy,
         sortParams,
       }
