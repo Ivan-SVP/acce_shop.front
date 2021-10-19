@@ -9,7 +9,7 @@ export default {
     getProductList(params) {
         return httpClient.get(base_path + '/products/', {'params': params})
     },
-    getProduct(productId) {
-        return httpClient.get(base_path + '/products/' + productId)
+    getProduct(productSlug) {
+        return httpClient.get(base_path + '/products/' + productSlug)
     },
 }

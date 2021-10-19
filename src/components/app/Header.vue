@@ -21,9 +21,9 @@
                 <div class="col-lg-8 col-md-9">
                   <div class="top-info-wrap text-right">
                     <ul class="top-info">
-                      <li>Mon - Fri : 9am to 5pm </li>
-                      <li><a href="#">+88012345678</a></li>
-                      <li><a href="#">fultalashop@gmail.com</a></li>
+                      <li>Ежедневно</li>
+                      <li><a href="tel:+79041683641">Телефон</a></li>
+                      <li><a href="mailto:acce.shop@mail.ru">acce.shop@mail.ru</a></li>
                     </ul>
                   </div>
                 </div>
@@ -46,59 +46,22 @@
             </div>
           </div>
           <div class="col-lg-8 d-none d-lg-block">
-            <div class="main-menu-area text-center">
+            <div class="main-menu-area text-right">
               <!--  Start Mainmenu Nav-->
               <nav class="main-navigation">
                 <ul>
-                  <li class="active"><a href="index.html">Home</a>
-                    <ul class="sub-menu">
-                      <li><a href="index.html">Home Page One</a></li>
-                      <li><a href="index-2.html">Home Page Two</a></li>
-                      <li><a href="index-box.html">Home Boxed Layout 1</a></li>
-                      <li><a href="index-2-box.html">Home Boxed Layout 2</a></li>
-                    </ul>
-                  </li>
-                  <li><a href="shop.html">Pages</a>
-                    <ul class="mega-menu">
-                      <li><a href="#">Column One</a>
-                        <ul>
-                          <li><a href="compare.html">Compare Page</a></li>
-                          <li><a href="login-register.html">Login &amp; Register</a></li>
-                          <li><a href="my-account.html">My Account Page</a></li>
-                        </ul>
-                      </li>
-                      <li><a href="blog.html">Column two</a>
-                        <ul>
-                          <li><a href="product-details.html">Product Details 1</a></li>
-                          <li><a href="product-details-2.html">Product Details 2</a></li>
-                          <li><a href="checkout.html">Checkout Page</a></li>
-                        </ul>
-                      </li>
-                      <li><a href="#">Column Three</a>
-                        <ul>
-                          <li><a href="error404.html">Error 404</a></li>
-                          <li><a href="cart.html">Cart Page</a></li>
-                          <li><a href="wishlist.html">Wish List Page</a></li>
-                        </ul>
+                  <li v-for="link in navLinks"
+                      :key="link.title"
+                      :class="isActivePath(link.path) ? 'active' : ''"
+                  >
+                    <a :href="link.path">{{ link.title }}</a>
+
+                    <ul v-if="link.subMenu && link.subMenu.length" class="sub-menu">
+                      <li v-for="subLink in link.subMenu" :key="subLink.title">
+                        <a :href="subLink.path">{{ subLink.title }}</a>
                       </li>
                     </ul>
                   </li>
-                  <li><a href="#">shop</a>
-                    <ul class="sub-menu">
-                      <li><a href="shop.html">Shop Left Sidebar</a></li>
-                      <li><a href="shop-right.html">Shop Right Sidebar</a></li>
-                      <li><a href="shop-fullwidth.html">Shop Full Width</a></li>
-                    </ul>
-                  </li>
-                  <li><a href="blog.html">Blog</a>
-                    <ul class="sub-menu">
-                      <li><a href="blog.html">Blog Left Sidebar</a></li>
-                      <li><a href="blog-right.html">Blog Right Sidebar</a></li>
-                      <li><a href="blog-details.html">Blog Details Page</a></li>
-                    </ul>
-                  </li>
-                  <li><a href="about-us.html">About</a></li>
-                  <li><a href="contact-us.html">Contact</a></li>
                 </ul>
               </nav>
 
@@ -114,47 +77,42 @@
               </div>
 
               <div class="user-wrap">
-                <a href="wishlist.html"><i class="ion-android-favorite-outline"></i></a>
+<!--                <a href="wishlist.html"><i class="ion-android-favorite-outline"></i></a>-->
               </div>
 
-
               <div class="shopping-cart-wrap">
-                <a href="#"><i class="ion-ios-cart-outline"></i> <span id="cart-total">2</span></a>
+                <a href="#">
+                  <i class="ion-ios-cart-outline"></i> <span v-if="cartItemList.length" id="cart-total">{{ cartItemList.length}}</span>
+                </a>
                 <ul class="mini-cart">
-                  <li class="cart-item">
+
+                  <li v-for="cartItem in cartItemList" :key="cartItem.product.id" class="cart-item">
                     <div class="cart-image">
-                      <a href="product-details.html"><img alt="" src="assets/images/product/product-01.jpg"></a>
+                      <router-link :to="{name: 'product-detail', params: { productSlug: cartItem.product.slug }}">
+                        <img v-if="cartItem.product.product_images && cartItem.product.product_images[0]"
+                             :src="cartItem.product.product_images[0].image"
+                             :alt="cartItem.product.title">
+                        <img v-else src="assets/images/product/product-01.jpg" :alt="cartItem.product.title">
+                      </router-link>
                     </div>
                     <div class="cart-title">
-                      <a href="product-details.html">
-                        <h4>Product Name 01</h4>
-                      </a>
-                      <span class="quantity">1 ×</span>
-                      <div class="price-box"><span class="new-price">$130.00</span></div>
-                      <a class="remove_from_cart" href="#"><i class="icon-trash icons"></i></a>
+                      <router-link :to="{name: 'product-detail', params: { productSlug: cartItem.product.slug }}">
+                        <h4>{{ cartItem.product.title }}</h4>
+                      </router-link>
+                      <span class="quantity">{{ cartItem.quantity }} ×</span>
+                      <div class="price-box"><span class="new-price">{{ cartItem.product.final_price }}</span></div>
+                      <a class="remove_from_cart" href="#" @click="removeFromCart(cartItem.product)"><i class="icon-trash icons"></i></a>
                     </div>
                   </li>
-                  <li class="cart-item">
-                    <div class="cart-image">
-                      <a href="product-details.html"><img alt="" src="assets/images/product/product-02.jpg"></a>
-                    </div>
-                    <div class="cart-title">
-                      <a href="product-details.html">
-                        <h4>Product Name 03</h4>
-                      </a>
-                      <span class="quantity">1 ×</span>
-                      <div class="price-box"><span class="new-price">$130.00</span></div>
-                      <a class="remove_from_cart" href="#"><i class="icon-trash icons"></i></a>
-                    </div>
-                  </li>
+
                   <li class="subtotal-titles">
                     <div class="subtotal-titles">
-                      <h3>Sub-Total :</h3><span>$ 230.99</span>
+                      <h3>Подытог :</h3><span>{{ cartTotal }}</span>
                     </div>
                   </li>
                   <li class="mini-cart-btns">
                     <div class="cart-btns">
-                      <a href="cart.html">View cart</a>
+                      <router-link :to="{name: 'cart'}">В корзину</router-link>
                       <a href="checkout.html">Checkout</a>
                     </div>
                   </li>
@@ -303,6 +261,7 @@
     import $ from 'jquery'
     import {computed} from "vue";
     import {useStore} from "vuex";
+    import {useRouter} from "vue-router";
 
     export default {
         name: "Header",
@@ -319,14 +278,6 @@
         //             })
         //     }
         // },
-        // data() {
-        //     return {
-        //         navLinks: [
-        //             {title: 'Главная', url: '/', exact: true},
-        //             {title: 'Кабинет', url: '/shop'},
-        //         ]
-        //     }
-        // }
       mounted() {
 
         /*--
@@ -351,11 +302,12 @@
       },
       setup() {
         const store = useStore()
+        const router = useRouter()
 
         let searchTextRef = '';
         let searchText = computed({
               get() {
-                return store.getters["catalog/productList/getFilters"].searchText
+                return store.getters["shop/productList/getFilters"].searchText
               },
               set(newValue) {
                 searchTextRef = newValue;
@@ -364,13 +316,33 @@
         )
 
         const search = function () {
-          store.dispatch("catalog/productList/setFilters", {'searchText': searchTextRef})
+          store.dispatch("shop/productList/setFilters", {'searchText': searchTextRef})
           $('.main-search-active').removeClass('inside')
         };
 
+        let navLinks = [
+          {title: 'Главная', path: '/'},
+          {title: 'Каталог', path: '/catalog'},
+          {title: 'Контакты', path: '/contacts'},
+          {title: 'О нас', path: '/about'},
+        ]
+
+        function isActivePath(path) {
+          return path === router.currentRoute.value.path
+        }
+
+        let cartItemList = computed(() => store.getters["shop/cart/getCartItemList"]);
+        let cartTotal = computed(() => store.getters["shop/cart/getCartTotal"]);
+        let removeFromCart = (product) => store.dispatch('shop/cart/removeFromCart', product)
         return {
           searchText,
           search,
+          navLinks,
+          isActivePath,
+
+          cartItemList,
+          cartTotal,
+          removeFromCart,
         }
       }
     }

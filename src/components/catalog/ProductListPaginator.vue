@@ -33,7 +33,7 @@ export default {
   },
   computed: {
     ...mapGetters({
-      pagination: "catalog/productList/getPaginatorParams",
+      pagination: "shop/productList/getPaginatorParams",
     }),
 
     pageCount() {
@@ -97,7 +97,7 @@ export default {
   },
   methods: {
     ...mapActions({
-      setCurrentPage: "catalog/productList/setCurrentPage",
+      setCurrentPage: "shop/productList/setCurrentPage",
     }),
 
     prevPage(){

@@ -1,8 +1,10 @@
 <template>
-  <div class="container">
-    <div class="row">
-      <Filters/>
-      <ProductList/>
+  <div class="main-content-wrap shop-page section-ptb">
+    <div class="container">
+      <div class="row">
+        <Filters/>
+        <ProductList/>
+      </div>
     </div>
   </div>
 </template>
@@ -25,10 +27,10 @@
       const store = useStore()
       const router = useRouter()
 
-      const setFilters = (filters) => store.dispatch('catalog/productList/setFilters', filters)
+      const setFilters = (filters) => store.dispatch('shop/productList/setFilters', filters)
       setFilters(JSON.parse(JSON.stringify(router.currentRoute.value.query)))
 
-      let queryFilters = computed(() => store.getters["catalog/productList/getFiltersQuery"])
+      let queryFilters = computed(() => store.getters["shop/productList/getFiltersQuery"])
 
       watch(queryFilters, (filters) => {
         router.push({'query': filters})

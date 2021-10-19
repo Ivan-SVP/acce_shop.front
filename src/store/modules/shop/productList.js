@@ -119,7 +119,7 @@ const actions = {
                         if (!currentFilters.priceTo || filtersForUpdate.maxPrice < currentFilters.priceTo < filtersForUpdate.minPrice) {
                             filtersForUpdate['priceTo'] = filtersForUpdate.maxPrice
                         }
-                        commit('catalog/productList/setFilters', filtersForUpdate, {root: true})
+                        commit('shop/productList/setFilters', filtersForUpdate, {root: true})
                     }
                 }
             })
@@ -133,7 +133,7 @@ const actions = {
     },
     async setCurrentPage ({commit}, page) {
         commit("setCurrentPage", page);
-        this.dispatch('catalog/productList/getProductList');
+        this.dispatch('shop/productList/getProductList');
     },
     async setFilters ({commit}, payload) {
         payload['updatePriceRange'] = (
@@ -146,11 +146,11 @@ const actions = {
             commit("setCurrentPage", Number(payload.page))
         }
 
-        this.dispatch('catalog/productList/getProductList')
+        this.dispatch('shop/productList/getProductList')
     },
     async cleanFilters ({commit}) {
         commit("cleanFilters")
-        this.dispatch('catalog/productList/getProductList')
+        this.dispatch('shop/productList/getProductList')
     },
 }
 

@@ -44,29 +44,29 @@
                   <!-- single-product-wrap start -->
                   <div class="single-product-wrap">
                     <div class="product-image">
-                      <router-link :to="{name: 'product-detail', params: { slug: product.slug }}">
-                        <img v-if="product.product_images[0]" :src="product.product_images[0].image" :alt="product.title">
+                      <router-link :to="{name: 'product-detail', params: { productSlug: product.slug }}">
+                        <img v-if="product.product_images && product.product_images[0]" :src="product.product_images[0].image" :alt="product.title">
                         <img v-else src="@/assets/images/product/product-01.jpg" :alt="product.title">
                       </router-link>
                       <span v-if="product.discount" class="label">-{{product.discount}} %</span>
                       <div class="product-action">
-                        <a href="#" class="add-to-cart"><i class="ion-bag"></i></a>
+                        <a @click="addToCart(product)" class="add-to-cart"><i class="ion-bag"></i></a>
                         <a href="#" class="wishlist"><i class="ion-android-favorite-outline"></i></a>
                         <a href="#" class="quick-view" data-toggle="modal" data-target="#exampleModalCenter"><i class="ion-ios-search"></i></a>
                       </div>
                     </div>
                     <div class="product-content">
                       <h3>
-                        <router-link :to="{name: 'product-detail', params: { slug: product.slug }}" :alt="product.title">
+                        <router-link :to="{name: 'product-detail', params: { productSlug: product.slug }}" :alt="product.title">
                           {{product.title}}
                         </router-link>
                       </h3>
                       <div v-if="product.discount" class="price-box">
                         <span class="old-price">{{product.price}} ₽</span>
-                        <span class="new-price">{{product.discount_price}} ₽</span>
+                        <span class="new-price">{{product.final_price}} ₽</span>
                       </div>
                       <div v-else class="price-box">
-                        <span>{{product.price}} ₽</span>
+                        <span>{{product.final_price}} ₽</span>
                       </div>
                     </div>
                   </div>
@@ -108,11 +108,11 @@
       const store = useStore()
       const setFilters  = inject('setFilters');
 
-      let productList = computed(() => store.getters["catalog/productList/getProductList"]);
+      let productList = computed(() => store.getters["shop/productList/getProductList"]);
 
       let sortBy = computed({
             get() {
-              return store.state.catalog.productList.sortBy
+              return store.state.shop.productList.sortBy
             },
             set(newValue) {
               setFilters({'sortBy': newValue})
@@ -120,13 +120,18 @@
           }
       )
 
-      let sortParams = store.getters["catalog/productList/getSortParams"];
+      let sortParams = store.getters["shop/productList/getSortParams"];
+      function addToCart(product, quantity=1) {
+        store.dispatch('shop/cart/addToCart', {'product': product, 'quantity': quantity})
+      }
 
       return {
         productList,
 
         sortBy,
         sortParams,
+
+        addToCart,
       }
     }
   }

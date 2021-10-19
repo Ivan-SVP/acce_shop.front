@@ -4,9 +4,7 @@
     <Breadcrumbs/>
 
     <!-- main-content-wrap -->
-    <div class="main-content-wrap shop-page section-ptb">
-      <router-view/>
-    </div>
+    <router-view/>
   </div>
 </template>
 

@@ -1,6 +1,6 @@
 import Vuex from 'vuex'
 import auth from './modules/auth';
-import catalog from './modules/catalog/index';
+import shop from './modules/shop/index';
 
 
 export default new Vuex.Store({
@@ -12,7 +12,7 @@ export default new Vuex.Store({
   },
   modules: {
     auth,
-    catalog,
+    shop,
   },
   getters: {
   }

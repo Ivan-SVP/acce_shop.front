@@ -18,7 +18,25 @@ windows.on('scroll', function() {
 });
 
 
+/*--
+   Sidebar Search Active
+-----------------------------*/
+function sidebarSearch() {
+    var searchTrigger = $('.trigger-search'),
+        endTriggersearch = $('button.search-close'),
+        container = $('.main-search-active');
 
+    searchTrigger.on('click', function() {
+        container.addClass('inside');
+    });
+
+    endTriggersearch.on('click', function() {
+        container.removeClass('inside');
+    });
+
+};
+sidebarSearch();
+    
 /*-------- Off Canvas Open close start--------*/
 $(".off-canvas-btn").on('click', function () {
     $("body").addClass('fix');

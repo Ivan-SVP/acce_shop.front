@@ -96,7 +96,7 @@
       let priceRange = ref([])
 
       let productFilters = computed(() => {
-            let filters = store.getters["catalog/productList/getFilters"]
+            let filters = store.getters["shop/productList/getFilters"]
             priceRange.value = [filters.priceFrom, filters.priceTo]
             return filters
           }
@@ -109,8 +109,8 @@
         })
       }
 
-      let isFiltered = computed(() => store.getters['catalog/productList/isFiltered'])
-      let cleanFilters = () => store.dispatch("catalog/productList/cleanFilters")
+      let isFiltered = computed(() => store.getters['shop/productList/isFiltered'])
+      let cleanFilters = () => store.dispatch("shop/productList/cleanFilters")
 
       return {
         productFilters,

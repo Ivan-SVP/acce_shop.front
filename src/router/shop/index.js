@@ -12,15 +12,17 @@ const shop_routes = [
                 component: () => import('../../views/shop/MainCatalog'),
             },
             {
-                path: 'catalog/:slug',
+                path: 'shop/:productSlug',
                 name: 'product-detail',
-                component: () => import('../../views/shop/MainCatalog'),
+                component: () => import('../../views/shop/ProductDetail'),
             },
-
+            {
+                path: 'cart',
+                name: 'cart',
+                component: () => import('../../views/shop/Cart'),
+            },
         ],
     },
-
-
 ];
 
 
