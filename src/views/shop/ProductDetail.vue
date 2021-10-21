@@ -62,14 +62,14 @@
               <div class="prodict-statas"><span>Количество :</span></div>
               <div class="product-quantity">
                 <div class="product-quantity">
-                  <input value="1" type="number" :max="product.quantity" min="1">
+                  <input v-model="quantity" type="number" :max="countProductsAvailable" min="0">
                 </div>
               </div>
             </div>
             <!-- product-quantity-action end -->
             <!-- pro_dtl_btn start -->
             <ul class="pro_dtl_btn">
-              <li><a href="#" class="buy_now_btn">в корзину</a></li>
+              <li><a href="#" class="buy_now_btn" @click.prevent="addToCart">в корзину</a></li>
   <!--            <li><a href="#"><i class="ion-heart"></i></a></li>-->
             </ul>
             <!-- pro_dtl_btn end -->
@@ -108,7 +108,7 @@
 <script>
   import { useStore } from 'vuex';
   import {useRouter} from "vue-router";
-  import {computed} from "vue";
+  import {computed, ref} from "vue";
 
   export default {
     name: "ProductDetail",
@@ -117,14 +117,62 @@
     setup() {
       const store = useStore()
       const router = useRouter()
+      let quantity = ref(0)
 
-      let product = computed(() => store.getters['shop/productDetail/getProduct'])
+      let product = computed(() => {
+        let p = store.getters['shop/productDetail/getProduct']
+        if (p.quantity) {
+          quantity.value = 1
+        }
+        return p
+      })
       store.dispatch("shop/productDetail/getProduct", router.currentRoute.value.params.productSlug)
+
+      function addToCart() {
+        if (quantity.value === 0) {
+          return
+        }
+        store.dispatch('shop/cart/addToCart', {'product': product.value, 'quantity': quantity.value})
+      }
+
+      let getCartItem = (slug) => store.getters["shop/cart/getCartItem"](slug)
+
+      let countProductsAvailable = computed(function () {
+        if (!product) {
+          return 0
+        }
+        let p = product.value
+
+        if (!p.quantity) {
+          return 0
+        }
+        let cartItem = getCartItem(p.slug)
+        if (cartItem) {
+          let qty = p.quantity - cartItem.quantity
+          if (qty === 0) {
+            quantity.value = 0
+          } else {
+            if (quantity.value === 0) {
+              quantity.value = 1
+            }
+          }
+          return qty
+        } else {
+          if (quantity.value === 0) {
+            quantity.value = 1
+          }
+        }
+        return p.quantity
+      })
+
 
       return {
         store,
         router,
         product,
+        quantity,
+        addToCart,
+        countProductsAvailable,
       }
     },
   }

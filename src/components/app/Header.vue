@@ -100,20 +100,20 @@
                         <h4>{{ cartItem.product.title }}</h4>
                       </router-link>
                       <span class="quantity">{{ cartItem.quantity }} ×</span>
-                      <div class="price-box"><span class="new-price">{{ cartItem.product.final_price }}</span></div>
-                      <a class="remove_from_cart" href="#" @click="removeFromCart(cartItem.product)"><i class="icon-trash icons"></i></a>
+                      <div class="price-box"><span class="new-price">{{ cartItem.product.final_price }} р</span></div>
+                      <a class="remove_from_cart" href="#" @click="removeFromCart(cartItem.product)"><i class="ion-close"></i></a>
                     </div>
                   </li>
 
                   <li class="subtotal-titles">
                     <div class="subtotal-titles">
-                      <h3>Подытог :</h3><span>{{ cartTotal }}</span>
+                      <h3>Подытог :</h3><span>{{ cartTotal }} р</span>
                     </div>
                   </li>
                   <li class="mini-cart-btns">
                     <div class="cart-btns">
                       <router-link :to="{name: 'cart'}">В корзину</router-link>
-                      <a href="checkout.html">Checkout</a>
+                      <router-link :to="{name: 'checkout'}">Оформить</router-link>
                     </div>
                   </li>
                 </ul>
@@ -350,5 +350,7 @@
 </script>
 
 <style scoped>
-
+  .remove_from_cart{
+    top: 0;
+  }
 </style>

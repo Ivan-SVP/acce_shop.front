@@ -3,7 +3,7 @@
     <div class="container">
       <div class="row">
         <div class="col-12">
-          <form action="#" class="cart-table">
+          <form @submit.prevent="" class="cart-table">
             <div class="table-content table-responsive">
               <table class="table">
                 <thead>
@@ -33,10 +33,10 @@
                   </td>
                   <td class="plantmore-product-price"><span class="amount">{{ cartItem.product.final_price }}</span></td>
                   <td class="plantmore-product-quantity">
-                    <input :value="cartItem.quantity" type="number">
+                    <input :value="cartItem.quantity" @change="setToCart(cartItem.product, $event)" type="number" min="1" :max="cartItem.product.quantity">
                   </td>
-                  <td class="product-subtotal"><span class="amount">{{ cartItem.amount }}</span></td>
-                  <td class="plantmore-product-remove"><a @click="removeFromCart(cartItem.product)"><i class="ion-close"></i></a></td>
+                  <td class="product-subtotal"><span class="amount">{{ cartItem.amount }} р</span></td>
+                  <td class="plantmore-product-remove"><a @click.prevent="removeFromCart(cartItem.product)"><i class="ion-close"></i></a></td>
                 </tr>
                 </tbody>
               </table>
@@ -46,26 +46,18 @@
                 <div class="coupon-all">
 
                   <div class="coupon2">
-                    <input class="submit btn" name="update_cart" value="Update cart" type="submit">
-                    <a href="shop.html" class="btn continue-btn">Continue Shopping</a>
+                    <router-link :to="{name: 'shop'}"  class="btn continue-btn">Вернуться в магазин</router-link>
                   </div>
 
-                  <div class="coupon">
-                    <h3>Coupon</h3>
-                    <p>Enter your coupon code if you have one.</p>
-                    <input id="coupon_code" class="input-text" name="coupon_code" value="" placeholder="Coupon code" type="text">
-                    <input class="button" name="apply_coupon" value="Apply coupon" type="submit">
-                  </div>
                 </div>
               </div>
               <div class="col-md-4 ml-auto">
                 <div class="cart-page-total">
-                  <h2>Cart totals</h2>
                   <ul>
-                    <li>Subtotal <span>$170.00</span></li>
-                    <li>Total <span>$170.00</span></li>
+                    <li>Итого <span>{{ cartTotalFull }} р</span></li>
+                    <li v-if="cartTotalFull !== cartTotal">Итого со скидкой <span>{{ cartTotal }} р</span></li>
                   </ul>
-                  <a href="#" class="proceed-checkout-btn">Proceed to checkout</a>
+                  <router-link :to="{name: 'checkout'}" class="proceed-checkout-btn">Оформить заказ</router-link>
                 </div>
               </div>
             </div>
@@ -91,13 +83,28 @@
 
       let removeFromCart = (product) => store.dispatch('shop/cart/removeFromCart', product)
 
+      function setToCart(product, event) {
+        let quantity = event.target.value
+        store.dispatch('shop/cart/setToCart', {'product': product, 'quantity': quantity})
+      }
+
+      let cartTotal = computed(() => store.getters["shop/cart/getCartTotal"]);
+      let cartTotalFull = computed(() => store.getters["shop/cart/getCartTotalWithoutDiscount"]);
+
+      store.dispatch('shop/cart/refreshCart')
       return {
         cartItemList,
         removeFromCart,
+        setToCart,
+        cartTotal,
+        cartTotalFull,
       }
     },
   }
 </script>
 
 <style scoped>
+.table-content table td{
+  width: 140px;
+}
 </style>

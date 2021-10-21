@@ -21,6 +21,11 @@ const shop_routes = [
                 name: 'cart',
                 component: () => import('../../views/shop/Cart'),
             },
+            {
+                path: 'checkout',
+                name: 'checkout',
+                component: () => import('../../views/shop/Cart'),
+            },
         ],
     },
 ];

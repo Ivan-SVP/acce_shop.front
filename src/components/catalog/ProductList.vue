@@ -50,7 +50,10 @@
                       </router-link>
                       <span v-if="product.discount" class="label">-{{product.discount}} %</span>
                       <div class="product-action">
-                        <a @click="addToCart(product)" class="add-to-cart"><i class="ion-bag"></i></a>
+
+                        <a v-if="!isProductInCart(product)" @click.prevent="addToCart(product)" class="add-to-cart"><i class="ion-bag"></i></a>
+                        <a v-else @click.prevent="removeFromCart(product)" class="add-to-cart"><i class="ion-close"></i></a>
+
                         <a href="#" class="wishlist"><i class="ion-android-favorite-outline"></i></a>
                         <a href="#" class="quick-view" data-toggle="modal" data-target="#exampleModalCenter"><i class="ion-ios-search"></i></a>
                       </div>
@@ -121,9 +124,16 @@
       )
 
       let sortParams = store.getters["shop/productList/getSortParams"];
+
       function addToCart(product, quantity=1) {
         store.dispatch('shop/cart/addToCart', {'product': product, 'quantity': quantity})
       }
+      let getCartItem = (slug) => store.getters["shop/cart/getCartItem"](slug)
+
+      function isProductInCart(product) {
+        return Boolean(getCartItem(product.slug))
+      }
+      let removeFromCart = (product) => store.dispatch('shop/cart/removeFromCart', product)
 
       return {
         productList,
@@ -132,6 +142,8 @@
         sortParams,
 
         addToCart,
+        removeFromCart,
+        isProductInCart,
       }
     }
   }
