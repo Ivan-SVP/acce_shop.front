@@ -1,38 +1,74 @@
 import mainApi from "@/api/main_server/endpoints/root";
+import {v4 as uuidv4} from "uuid";
 
 
-function setCartToLocalStorage(cart) {
+function createEmptyCart() {
+    return {
+        'cartItems': [],
+        'uuid': uuidv4(),
+    }
+}
+
+function getOrCreateCartFromLocalStorage() {
+    let cart = localStorage.getItem('cart');
+
+    if (!cart) {
+        cart = createEmptyCart();
+        localStorage.setItem('cart', JSON.stringify(cart))
+    }
+
+    if (typeof cart === 'string') {
+        cart = JSON.parse(cart)
+    }
+    return cart
+}
+
+function updateCartItemsOfLocalStorage(cartItems) {
+    let cart = getOrCreateCartFromLocalStorage()
+    cart['cartItems'] = cartItems
     localStorage.setItem('cart', JSON.stringify(cart))
 }
 
-function getCartFromLocalStorage() {
-    let cart = localStorage.getItem('cart')
-    return cart ? JSON.parse(cart) : []
+function clearLocalStorageCart() {
+    localStorage.setItem('cart', JSON.stringify(createEmptyCart()))
 }
 
-const state = {
-    'cart': getCartFromLocalStorage()
-}
+
+const state = getOrCreateCartFromLocalStorage()
 
 const getters = {
     getCartItemList: state => {
-        return state.cart
+        return state.cartItems
+    },
+    getCartDataForBackend: state => {
+        let cartItems = state.cartItems.map(function(item) {
+            return  {
+                'product': item.product.slug,
+                'price': item.product.final_price,
+                'quantity': item.quantity,
+            }
+        });
+
+        return {
+            'uuid': state.uuid,
+            'order_items': cartItems,
+        }
     },
     getCartItemSlugs: state => {
-        return state.cart.map(function(item) {
+        return state.cartItems.map(function(item) {
             return item.product.slug;
         });
     },
     getCartItem: (state) => (slug) => {
-        return state.cart.find(cartItem => cartItem.product.slug === slug)
+        return state.cartItems.find(cartItem => cartItem.product.slug === slug)
     },
     getCartTotal: state => {
-        return state.cart.reduce((acc, cartItem) => {
+        return state.cartItems.reduce((acc, cartItem) => {
             return (cartItem.quantity * cartItem.product.final_price) + acc;
         }, 0).toFixed(2);
     },
     getCartTotalWithoutDiscount: state => {
-        return state.cart.reduce((acc, cartItem) => {
+        return state.cartItems.reduce((acc, cartItem) => {
             return (cartItem.quantity * cartItem.product.price) + acc;
         }, 0).toFixed(2);
     },
@@ -44,11 +80,11 @@ const mutations = {
         let qty = data.quantity > 0 ? data.quantity : 1
         let rewrite = !!data.rewrite
 
-        const cartItem = state.cart.find(item => item.product.slug === product.slug)
+        const cartItem = state.cartItems.find(item => item.product.slug === product.slug)
 
         if (!cartItem) {
             qty = product.quantity < qty ? product.quantity : qty
-            state.cart.push({
+            state.cartItems.push({
                 'product': product,
                 'quantity': qty,
                 'amount': qty * product.final_price,
@@ -64,23 +100,27 @@ const mutations = {
             cartItem.amount = cartItem.quantity * product.final_price
         }
 
-        setCartToLocalStorage(state.cart)
+        updateCartItemsOfLocalStorage(state.cartItems)
     },
     removeFromCart (state, product) {
-        const index = state.cart.findIndex(item => item.product.slug === product.slug)
-        state.cart.splice(index, 1)
+        const index = state.cartItems.findIndex(item => item.product.slug === product.slug)
+        state.cartItems.splice(index, 1)
 
-        setCartToLocalStorage(state.cart)
+        updateCartItemsOfLocalStorage(state.cartItems)
     },
-    refreshCart (state, products) {
-        products.forEach(function (prod){
-            let currentItem = state.cart.find(cartItem => cartItem.product.slug === prod.slug)
+    refreshCartItems (state, products) {
+        products.forEach(function (prod){  // TODO убирать/обнулять, которые не пришли
+            let currentItem = state.cartItems.find(cartItem => cartItem.product.slug === prod.slug)
             currentItem.product = prod
             if (currentItem.quantity > prod.quantity) {
                 currentItem.quantity = prod.quantity
             }
         })
-    }
+        updateCartItemsOfLocalStorage(state.cartItems)
+    },
+    syncFromLocalStorage (state) {
+        Object.assign(state, getOrCreateCartFromLocalStorage())
+    },
 }
 
 const actions = {
@@ -95,16 +135,20 @@ const actions = {
     removeFromCart({commit}, product) {
         commit('removeFromCart', product)
     },
-    async refreshCart({commit, getters}) {
+    async refreshCartItems({commit, getters}) {
         let itemSlugs = getters["getCartItemSlugs"]
-        if (!itemSlugs) {
+        if (!itemSlugs.length) {
             return
         }
         await mainApi.getProductList({'slug__in': itemSlugs.join(',')})
             .then(res => {
-                commit('refreshCart', res.data.results)
+                commit('refreshCartItems', res.data.results)
             })
     },
+    clearCart({commit}) {
+        clearLocalStorageCart()
+        commit('syncFromLocalStorage')
+    }
 }
 
 export default {

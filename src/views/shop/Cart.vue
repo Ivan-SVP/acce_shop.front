@@ -91,7 +91,7 @@
       let cartTotal = computed(() => store.getters["shop/cart/getCartTotal"]);
       let cartTotalFull = computed(() => store.getters["shop/cart/getCartTotalWithoutDiscount"]);
 
-      store.dispatch('shop/cart/refreshCart')
+      store.dispatch('shop/cart/refreshCartItems')
       return {
         cartItemList,
         removeFromCart,
