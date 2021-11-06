@@ -13,17 +13,10 @@
       </div>
       <!-- shop-sidebar end -->
 
-      <!-- shop-sidebar start -->
+      <!-- shop-sidebar start-->
       <div class="shop-sidebar mb-30">
         <h4 class="title">КАТЕГОРИИ</h4>
-        <ul>
-          <li v-for="category in categoryList" :key="category.slug"
-              :class="category.slug === productFilters.category ? 'active' : ''">
-            <a @click.prevent="setFilters({'category': category.slug})">{{ category.title }}
-              <span>{{ category.products_count }}</span>
-            </a>
-          </li>
-        </ul>
+        <category-node v-bind:catList="categoryList" v-bind:lvl="0"></category-node>
       </div>
       <!-- shop-sidebar end -->
 
@@ -71,6 +64,7 @@
   import {computed, inject, ref} from "vue";
   import VueSlider from 'vue-slider-component'
   import 'vue-slider-component/theme/antd.css'
+  import CategoryNode from './CategoryNode'
 
   export default {
     name: "Filters",
@@ -86,7 +80,8 @@
           });
     },
     components: {
-      VueSlider
+      VueSlider,
+      CategoryNode,
     },
 
     setup() {
@@ -114,7 +109,6 @@
 
       return {
         productFilters,
-        setFilters,
         priceRange,
         applyPriceRange,
         isFiltered,

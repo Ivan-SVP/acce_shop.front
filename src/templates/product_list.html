@@ -1,0 +1,342 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load mptt_tags %}
+{% block content %}
+    <!-- Page Title-->
+    <div class="page-title-wrapper" aria-label="Page title">
+      <div class="container">
+        <h2 class="page-title">Каталог</h2>
+        <hr class="mt-4">
+      </div>
+    </div>
+    <!-- Page Content-->
+    <!-- Quick view modal-->
+    {% for item in items %}
+    <div class="modal modal-quick-view fade" id="quick-view{{ item.id }}" tabindex="-1" role="dialog">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <div>
+              <h2 class="h3 modal-title mb-1">{{ item.title }}</h2>
+              <h3 class="text-primary font-weight-light mb-0">{{ item.price }} р.</h3>
+            </div>
+            <button class="close" type="button" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+          </div>
+          <div class="modal-body">
+            <div class="row">
+              <!-- Product gallery-->
+              <div class="col-lg-7">
+                <div class="owl-carousel" data-owl-carousel="{ &quot;nav&quot;: true, &quot;dots&quot;: false, &quot;loop&quot;: true, &quot;margin&quot;: 15 }">
+                    {% for image in item.product_images.all %}
+                    <img src="{{ image.image.url }}" alt="{{ item.title }}">
+                    {% endfor %}
+                </div>
+              </div>
+              <!-- Product details-->
+              <div class="col-lg-5 pt-4 pt-lg-0">
+                <form class="pb-4">
+                  <div class="d-flex flex-wrap align-items-center pt-1">
+                    <div>
+                      <input class="px-2 form-control mr-2" type="number" name="quantity" style="width: 3.2rem;" value="1" required>
+                    </div>
+                    <div>
+                      <button class="btn btn-primary px-5 mr-2" type="submit"><i class="mr-2" data-feather="shopping-cart"></i>В корзину</button>
+                    </div><a class="btn box-shadow-0 nav-link-inline my-2" href="#"><i class="align-middle mr-1" data-feather="heart" style="width: 1.1rem; height: 1.1rem;"></i>В избранное</a>
+                  </div>
+                </form>
+                <div class="card">
+                  <div class="card-header py-3 bg-0">
+                    <h3 class="h6 mb-0"><span class="d-inline-block pr-2 border-right mr-2 align-middle mt-n1"><i data-feather="info" style="width: 1.1rem; height: 1.1rem;"></i></span>Информация о продукте</h3>
+                  </div>
+                  <div class="card-body">
+                    <ul class="mb-0">
+                      <li>{{ item.description }}</li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+    <!-- Toast notifications-->
+    <div class="toast-container toast-bottom-center">
+      <div class="toast mb-3" id="cart-toast" data-delay="5000" role="alert" aria-live="assertive" aria-atomic="true">
+        <div class="toast-header bg-success text-white"><i class="mr-2" data-feather="check-circle" style="width: 1.25rem; height: 1.25rem;"></i><span class="font-weight-semibold mr-auto">Added to cart!</span>
+          <button class="close text-white ml-2 mb-1" type="button" data-dismiss="toast" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        </div>
+        <div class="toast-body">This item was added to your cart.</div>
+      </div>
+      <div class="toast mb-3" id="compare-toast" data-delay="5000" role="alert" aria-live="assertive" aria-atomic="true">
+        <div class="toast-header bg-info text-white"><i class="mr-2" data-feather="info" style="width: 1.25rem; height: 1.25rem;"></i><span class="font-weight-semibold mr-auto">Added to comparison!</span>
+          <button class="close text-white ml-2 mb-1" type="button" data-dismiss="toast" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        </div>
+        <div class="toast-body">This item was added to comparison table.</div>
+      </div>
+      <div class="toast mb-3" id="wishlist-toast" data-delay="5000" role="alert" aria-live="assertive" aria-atomic="true">
+        <div class="toast-header bg-info text-white"><i class="mr-2" data-feather="info" style="width: 1.25rem; height: 1.25rem;"></i><span class="font-weight-semibold mr-auto">Added to wishlist!</span>
+          <button class="close text-white ml-2 mb-1" type="button" data-dismiss="toast" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        </div>
+        <div class="toast-body">This item was added to your wishlist.</div>
+      </div>
+      <div class="toast mb-3" id="profile-toast" data-delay="5000" role="alert" aria-live="assertive" aria-atomic="true">
+        <div class="toast-header bg-success text-white"><i class="mr-2" data-feather="check-circle" style="width: 1.25rem; height: 1.25rem;"></i><span class="font-weight-semibold mr-auto">Updated!</span>
+          <button class="close text-white ml-2 mb-1" type="button" data-dismiss="toast" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        </div>
+        <div class="toast-body">Your profile info updated successfuly.</div>
+      </div>
+      <div class="toast mb-3" id="address-toast" data-delay="5000" role="alert" aria-live="assertive" aria-atomic="true">
+        <div class="toast-header bg-success text-white"><i class="mr-2" data-feather="check-circle" style="width: 1.25rem; height: 1.25rem;"></i><span class="font-weight-semibold mr-auto">Updated!</span>
+          <button class="close text-white ml-2 mb-1" type="button" data-dismiss="toast" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        </div>
+        <div class="toast-body">Your addresses info updated successfuly.</div>
+      </div>
+    </div>
+    <div class="container pb-5 mb-4">
+      <div class="row">
+        <div class="col-lg-3">
+          <!-- Shop sidebar-->
+          <div class="offcanvas-sidebar">
+            <div class="offcanvas-sidebar-toggle"><span class="toggle-knob"><i data-feather="chevrons-right"></i>Меню категорий</span></div>
+            <div class="offcanvas-sidebar-body">
+              <div class="offcanvas-sidebar-body-inner">
+                <!-- Categories-->
+                <div class="widget widget-categories">
+                  <a style="text-decoration:None" href="{% url 'catalog:product_list' 'root' %}"><h3 class="widget-title">Категории</h3></a>
+                  <ul id="shopCategories">
+                    {% recursetree categories %}
+                    <li class="has-children">
+                      <a{% if not node.is_leaf_node %} href="#{{node.slug}}" data-toggle="collapse" {% if node != categories.first %}class="collapsed"{% endif %}{% else %} href="{{node.get_absolute_url}}"{% endif %}>
+                        {% if not node.is_leaf_node %}<i class="widget-categories-indicator" data-feather="chevron-down"></i>
+                            {{ node.title }}
+                            <span class="badge text-muted ml-1">{{ node.get_children.count }} ({{ node.products_count }})</span>
+                        {% else %}
+                            {{ node.title }}
+                            <span class="badge text-muted ml-1">({{ node.products_count }})</span>
+                        {% endif %}
+                      </a>
+                      {% if not node.is_leaf_node %}
+                      <ul id="{{ node.slug }}" {% if node.is_root %} class="collapse show" data-parent="#shopCategories"
+                          {% elif node.slug in slugs or node == categories.first %} class="collapse show" data-parent="#{{ node.slug }}"
+                          {% else %} class="collapse" data-parent="#{{ node.slug }}"{% endif %}>
+                              {{ children }}
+                      </ul>
+                      {% endif %}
+                    </li>
+                    {% endrecursetree %}
+                  </ul>
+                </div>
+                <br>
+                <!-- Price range-->
+{#              {% if category.products_count > 10 or not category %}#}
+{#                <div class="widget mb-4 pb-3">#}
+{#                  <h3 class="widget-title">Диапазон стоимости</h3>#}
+{#                  <form action="" method="get" class="range-slider" data-start-min="{{ min_cost }}" data-start-max="{{ max_cost }}" data-min="{{ min_cost }}" data-max="{{ max_cost }}" data-step="1">#}
+{#                {% if is_sorted %}#}
+{#                    <input name="sorting" value="{{ is_sorted }}" hidden>#}
+{#                {% endif %}#}
+{#                    <div class="ui-range-slider"></div>#}
+{#                    <footer class="ui-range-slider-footer">#}
+{#                      <div class="column">#}
+{#                        <button class="btn btn-outline-primary btn-sm" type="submit">Показать</button>#}
+{#                      </div>#}
+{#                      <div class="column">#}
+{#                        <div class="ui-range-values">#}
+{#                          <div class="ui-range-label">Цена:</div>#}
+{#                          <div class="ui-range-value-min"><span></span>#}
+{#                            <input name="min_range" type="hidden">р#}
+{#                          </div>&nbsp;&ndash;&nbsp;#}
+{#                          <div class="ui-range-value-max"><span></span>#}
+{#                            <input name="max_range" type="hidden">р#}
+{#                          </div>#}
+{#                        </div>#}
+{#                      </div>#}
+{#                    </footer>#}
+{#                  </form>#}
+{#                </div>#}
+{#              {% endif %}#}
+{#                <!-- Brand filter    -->#}
+{#                <div class="widget mb-4 pb-1">#}
+{#                  <h3 class="widget-title">Filter by brand</h3>#}
+{#                  <div class="custom-control custom-checkbox mb-1">#}
+{#                    <input class="custom-control-input" type="checkbox" id="adidas">#}
+{#                    <label class="custom-control-label" for="adidas">Adidas<span class="text-muted ml-1">(254)</span></label>#}
+{#                  </div>#}
+{#                  <div class="custom-control custom-checkbox mb-1">#}
+{#                    <input class="custom-control-input" type="checkbox" id="bilabong">#}
+{#                    <label class="custom-control-label" for="bilabong">Bilabong<span class="text-muted ml-1">(39)</span></label>#}
+{#                  </div>#}
+{#                  <div class="custom-control custom-checkbox mb-1">#}
+{#                    <input class="custom-control-input" type="checkbox" id="klein">#}
+{#                    <label class="custom-control-label" for="klein">Calvin Klein<span class="text-muted ml-1">(128)</span></label>#}
+{#                  </div>#}
+{#                  <div class="custom-control custom-checkbox mb-1">#}
+{#                    <input class="custom-control-input" type="checkbox" id="nike">#}
+{#                    <label class="custom-control-label" for="nike">Nike<span class="text-muted ml-1">(310)</span></label>#}
+{#                  </div>#}
+{#                  <div class="custom-control custom-checkbox mb-1">#}
+{#                    <input class="custom-control-input" type="checkbox" id="bahama">#}
+{#                    <label class="custom-control-label" for="bahama">Tommy Bahama<span class="text-muted ml-1">(46)</span></label>#}
+{#                  </div>#}
+{#                </div>#}
+{#                <!-- Size filter    -->#}
+{#                <div class="widget mb-4 pb-1">#}
+{#                  <h3 class="widget-title">Filter by size</h3>#}
+{#                  <div class="custom-control custom-checkbox mb-1">#}
+{#                    <input class="custom-control-input" type="checkbox" id="xl">#}
+{#                    <label class="custom-control-label" for="xl">XL<span class="text-muted ml-1">(208)</span></label>#}
+{#                  </div>#}
+{#                  <div class="custom-control custom-checkbox mb-1">#}
+{#                    <input class="custom-control-input" type="checkbox" id="l">#}
+{#                    <label class="custom-control-label" for="l">L<span class="text-muted ml-1">(311)</span></label>#}
+{#                  </div>#}
+{#                  <div class="custom-control custom-checkbox mb-1">#}
+{#                    <input class="custom-control-input" type="checkbox" id="m">#}
+{#                    <label class="custom-control-label" for="m">M<span class="text-muted ml-1">(485)</span></label>#}
+{#                  </div>#}
+{#                  <div class="custom-control custom-checkbox mb-1">#}
+{#                    <input class="custom-control-input" type="checkbox" id="s">#}
+{#                    <label class="custom-control-label" for="s">S<span class="text-muted ml-1">(213)</span></label>#}
+{#                  </div>#}
+{#                  <div class="custom-control custom-checkbox mb-1">#}
+{#                    <input class="custom-control-input" type="checkbox" id="xs">#}
+{#                    <label class="custom-control-label" for="xs">XS<span class="text-muted ml-1">(197)</span></label>#}
+{#                  </div>#}
+{#                </div>#}
+{#                <!-- Promo banner--><a class="d-block text-decoration-0" href="#">#}
+{#                  <div class="bg-secondary">#}
+{#                    <div class="px-3 pt-4 text-center">#}
+{#                      <h4 class="font-size-sm font-weight-normal pt-1 mb-2">2019 Spring / Summer</h4>#}
+{#                      <h4 class="h5 pb-2">Hoodie Collection</h4>#}
+{#                      <div class="btn btn-primary btn-sm">Shop now</div>#}
+{#                    </div><img src="../static/img/shop/banner01.jpg" alt="Promo banner">#}
+{#                  </div></a>#}
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-lg-9">
+          <!-- Toolbar-->
+          <div class="d-flex flex-wrap justify-content-center justify-content-sm-between pb-3">
+            <div class="d-flex flex-wrap">
+              <div class="form-inline flex-nowrap mr-3 mr-sm-4 pb-3">
+                <form action="" method="get">
+                {% if is_filter_min %}
+                    <input name="min_range" value="{{ is_filter_min }}" hidden>
+                    <input name="max_range" value="{{ is_filter_max }}" hidden>
+                {% endif %}
+                <select class="form-control custom-select" id="sorting" name="sorting" onchange="this.form.submit()">
+                  <option >Сортировка</option>
+{#                  <option>Popularity</option>#}
+                  <option {% if is_sorted == "min_price" %}selected{% endif %} value="min_price">сначала дешевле</option>
+                  <option {% if is_sorted == "max_price" %}selected{% endif %} value="max_price">сначала дороже</option>
+{#                  <option>Average Rating</option>#}
+                  <option {% if is_sorted == "a-z" %}selected{% endif %} value="a-z">от А до Я</option>
+                  <option {% if is_sorted == "z-a" %}selected{% endif %} value="z-a">от Я до А</option>
+                </select>
+                </form>
+              </div>
+{#              <div class="form-inline flex-nowrap pb-3">#}
+{#                <label class="mr-2 d-none d-sm-block" for="number">Show:</label>#}
+{#                <select class="form-control custom-select mr-sm-2" id="number">#}
+{#                  <option>12</option>#}
+{#                  <option>24</option>#}
+{#                  <option>48</option>#}
+{#                  <option>96</option>#}
+{#                </select><small class="form-text text-muted text-nowrap d-none d-sm-block">from 860</small>#}
+{#              </div>#}
+            </div>
+            <div class="form-inline d-none d-md-flex flex-nowrap pb-3">
+              <label class="mr-2" for="pager">Страница:</label>
+{#              <input class="form-control mr-2" type="number" id="pager" value="{{ items.number }}" style="width: 5rem;"><span class="form-text">/ {{ items.paginator.num_pages }}</span>#}
+              <span class="form-text">{{ items.number }} </span><span class="form-text">/ {{ items.paginator.num_pages }}</span>
+            </div>
+          </div>
+          <!-- Products grid-->
+          <div class="row">
+            <!-- Product-->
+            {% for item in items %}
+            <div class="col-md-4 col-sm-6">
+              <div class="product-card mb-4">
+                <div class="product-thumb"><a class="product-thumb-link" href="{{ item.get_absolute_url }}"></a>
+                    <span class="product-wishlist-btn" data-toggle="tooltip" data-placement="left" title="Add to wishlist"><i data-feather="heart"></i></span>
+                    {% if item.product_images.first %}
+                        <img src="{{ item.product_images.first.image.url }}" alt="{{ item.title }}">
+                    {% else %}
+                        <img src="{% static 'img/placeholder.jpg' %}" alt="У это товара пока нет фотографий">
+                    {% endif %}
+                </div>
+                <div class="product-card-body text-center"><a class="product-meta" href="{{ item.category.get_absolute_url }}">{{ item.category.title }}</a>
+                  <h3 class="product-card-title"><a href="{{ item.get_absolute_url }}">{{ item.title }}</a></h3>
+                    <span class="text-primary">{{ item.price }} р</span>
+                </div>
+                <div class="product-card-body body-hidden">
+                  {% if item.id|stringformat:'s' not in cart.cart.keys  %}
+                  <div id="add_cart_{{ item.id }}">
+                  <form action="{% url 'cart:cart_add' item.id %}" class="add-to-cart" method="post">
+                    {% csrf_token %}
+                    <input name="quantity" value="1" hidden>
+                    <button class="btn btn-primary btn-sm btn-block" type="submit">В корзину</button>
+                  </form>
+                  </div>
+                  {% else %}
+                      <div id="in_cart_{{ item.id }}" class="alert alert-success text-center" role="alert">
+                          <div class="alert-icon-box">
+                            <i class="alert-icon" data-feather="check-circle"></i>
+                          </div><span>В корзине</span>
+                      </div>
+                  {% endif %}
+                    <a class="quick-view-btn" href="#quick-view{{ item.id }}" data-toggle="modal"><i class="mr-1" data-feather="eye"></i>Предпросмотр</a>
+                </div>
+              </div>
+            </div>
+            {% endfor %}
+          </div>
+          <hr class="pb-4 mb-2">
+          <!-- Pagination-->
+          <nav aria-label="Page navigation">
+{#            <ul class="pagination justify-content-center justify-content-sm-start mb-0">#}
+<ul class="pagination justify-content-center mb-0">
+
+{% if items.has_previous %}
+  <li class="page-item">
+      <a class="page-link" href="?page={{ items.previous_page_number }}{% if is_sorted %}&sorting={{ is_sorted }}{% endif %}{% if is_filter_min %}&min_range={{ is_filter_min }}&max_range={{ is_filter_max }}{% endif %}">
+      Назад</a></li>
+{% endif %}
+
+{% if items.number > 1 %}
+  <li class="page-item"><a class="page-link" href="?page=1{% if is_sorted %}&sorting={{ is_sorted }}{% endif %}{% if is_filter_min %}&min_range={{ is_filter_min }}&max_range={{ is_filter_max }}{% endif %}">1</a></li>
+  <li class="page-item d-none d-sm-block">...</li>
+{% endif %}
+
+{% for page_number in items.paginator.my_range %}
+    {% if page_number < items.number and page_number > 1 %}
+      <li class="page-item"><a class="page-link" href="?page={{ page_number }}{% if is_sorted %}&sorting={{ is_sorted }}{% endif %}{% if is_filter_min %}&min_range={{ is_filter_min }}&max_range={{ is_filter_max }}{% endif %}">{{ page_number }}</a></li>
+
+    {% elif page_number == items.number %}
+        <li class="page-item d-sm-none"><span class="page-link page-link-static">{{ items.number }} / {{ items.paginator.num_pages }}</span></li>
+        <li class="page-item active d-none d-sm-block" aria-current="page"><span class="page-link">{{ items.number }}<span class="sr-only">(текущая)</span></span></li>
+
+    {% elif page_number > items.number and page_number < items.paginator.num_pages %}
+      <li class="page-item"><a class="page-link" href="?page={{ page_number }}{% if is_sorted %}&sorting={{ is_sorted }}{% endif %}{% if is_filter_min %}&min_range={{ is_filter_min }}&max_range={{ is_filter_max }}{% endif %}">{{ page_number }}</a></li>
+    {% endif %}
+{% endfor %}
+
+{% if items.number < items.paginator.num_pages %}
+  <li class="page-item d-none d-sm-block">...</li>
+  <li class="page-item"><a class="page-link" href="?page={{ items.paginator.num_pages }}{% if is_sorted %}&sorting={{ is_sorted }}{% endif %}{% if is_filter_min %}&min_range={{ is_filter_min }}&max_range={{ is_filter_max }}{% endif %}">{{ items.paginator.num_pages }}</a></li>
+{% endif %}
+
+{% if items.has_next %}
+<li class="page-item"><a class="page-link" href="?page={{ items.next_page_number }}{% if is_sorted %}&sorting={{ is_sorted }}{% endif %}{% if is_filter_min %}&min_range={{ is_filter_min }}&max_range={{ is_filter_max }}{% endif %}">
+  Вперед</a></li>
+{% endif %}
+
+</ul>
+          </nav>
+        </div>
+      </div>
+    </div>
+{% endblock content %}
