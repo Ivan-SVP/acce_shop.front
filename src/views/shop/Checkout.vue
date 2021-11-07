@@ -160,7 +160,7 @@
 
       function createOrder(){
         store.dispatch('shop/checkout/createOrder')
-        // router.push('/')  TODO сделать "thank you page"
+        router.push({'name': 'thank-you'})
       }
 
       store.dispatch('shop/cart/refreshCartItems')

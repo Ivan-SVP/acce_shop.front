@@ -6,6 +6,8 @@ const state = {
     'phone': '89041683641',
     'address': null,
     'comment': null,
+
+    'lastOrderNumber': null,
 }
 
 const getters = {
@@ -18,6 +20,9 @@ const getters = {
             'comment': state.comment,
         }
     },
+    getLastOrderNumber: state => {
+        return state.lastOrderNumber
+    }
 }
 
 const mutations = {
@@ -36,6 +41,9 @@ const mutations = {
     setComment (state, newComment) {
         state.comment = newComment
     },
+    setLastOrderNumber (state, number) {
+        state.lastOrderNumber = number
+    },
 }
 
 const actions = {
@@ -47,6 +55,7 @@ const actions = {
             .then(res => {
                 console.log(res)
                 dispatch('shop/cart/clearCart', {}, {root:true})
+                commit('setLastOrderNumber', res.data.id)
             })
             // TODO validation
     },
