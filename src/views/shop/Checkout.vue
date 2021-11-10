@@ -13,19 +13,19 @@
                   <div class="col-lg-12">
                     <p class="single-form-row">
                       <label>Имя / ФИО (для доставки) <span class="required">*</span></label>
-                      <input v-model="name" type="text" name="email">
+                      <input v-model="name" type="text" name="email" placeholder="Иван" required>
                     </p>
                   </div>
                   <div class="col-lg-12">
                     <p class="single-form-row">
                       <label>Email <span class="required">*</span></label>
-                      <input v-model="email" type="email" name="Email address ">
+                      <input v-model="email" type="email" name="email" placeholder="ivan@mail.ru" required>
                     </p>
                   </div>
                   <div class="col-lg-12">
                     <p class="single-form-row">
                       <label>Телефон <span class="required">*</span></label>
-                      <input v-model="phone" type="text" name="phone">
+                      <input v-model="phone" type="text" name="phone" placeholder="88009008090" required>
                     </p>
                   </div>
                   <div class="col-lg-12">
@@ -36,7 +36,7 @@
                   </div>
                   <div class="col-lg-12">
                     <p class="single-form-row m-0">
-                      <label>Комментарий</label>
+                      <label>Комментарий (предпочтительный способ связи, время и пр.)</label>
                       <textarea v-model="comment" class="checkout-mess" rows="2" cols="5"></textarea>
                     </p>
                   </div>
@@ -61,7 +61,9 @@
                     </tr>
                     </thead>
                     <tbody>
-                    <tr v-for="cartItem in cartItemList" :key="cartItem.product.id" class="cart_item">
+                    <tr v-for="cartItem in cartItemList" :key="cartItem.product.id"
+                        :class="'cart_item' + (cartItem.quantity ? '' : ' text-danger')"
+                    >
                       <td class="product-name">
                         {{ cartItem.product.title }} <strong class="product-quantity"> × {{ cartItem.quantity }}</strong>
                       </td>
@@ -87,24 +89,29 @@
                     <!-- ACCORDION START -->
                     <h5>Оплата</h5>
                     <div class="payment-content">
-                      <p>Make your payment directly into our bank account. Please use your Order ID as the payment reference. Your order won’t be shipped until the funds have cleared in our account.</p>
+                      <p style="font-weight: bold">Оплата осуществляется одним из способов:</p>
+                      <p> - по выставленному счету/ссылке</p>
+                      <p> - при получении</p>
+                      <p> - переводом на карту</p>
+                      <p>Оплатить можно, как только мы убедимся, что все позиции в наличии.</p>
                     </div>
                     <!-- ACCORDION END -->
                     <!-- ACCORDION START -->
-                    <h5>Доставка</h5>
+                    <h5 class="mt-10">Доставка</h5>
                     <div class="payment-content">
-                      <p>Please send your cheque to Store Name, Store Street, Store Town, Store State / County, Store Postcode.</p>
+                      <p>Доставка возможна почтой, транстпортными компаниями(любыми популярными). При покупе от 5000 - бесплатна, от 3000 - со скидкой 50%, до 3000 согласно тарифам оператора доставки.</p>
                     </div>
                     <!-- ACCORDION END -->
                     <!-- ACCORDION START -->
-                    <h5>Что дальше</h5>
+                    <h5 class="mt-10">Что дальше</h5>
                     <div class="payment-content">
-                      <p>Pay via PayPal; you can pay with your credit card if you don’t have a PayPal account.</p>
+                      <p>Мы проверим фактическое наличие и сотояние товара -> согласуем с вами детали заказа, доставки, оплаты -> передадим заказ оператору доставки, вам трек номер.</p>
                     </div>
                     <!-- ACCORDION END -->
                   </div>
                   <div class="order-button-payment">
                     <input type="submit" value="Оформить заказ" @click.prevent="createOrder()" />
+                    <p class="text-danger">{{ orderError }}</p>
                   </div>
                 </div>
                 <!-- your-order-wrapper start -->
@@ -158,9 +165,20 @@
         store.commit('shop/checkout/setComment', newComment)
       })
 
-      function createOrder(){
-        store.dispatch('shop/checkout/createOrder')
-        router.push({'name': 'thank-you'})
+      let orderError = ref('');
+      async function createOrder(){
+        try {
+          if (!name.value || !email.value || !phone.value) {
+            orderError.value = 'Заполните обязательные поля!'
+            return
+          }
+
+          await store.dispatch('shop/checkout/createOrder')
+          orderError.value = ''
+          await router.push({'name': 'thank-you'})
+        } catch (error) {
+          orderError.value = 'Произошла непредвиденная ошибка, не удалось создать заказ.'
+        }
       }
 
       store.dispatch('shop/cart/refreshCartItems')
@@ -175,7 +193,8 @@
         address,
         comment,
 
-        createOrder
+        createOrder,
+        orderError,
       }
     },
   }

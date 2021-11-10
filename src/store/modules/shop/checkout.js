@@ -1,9 +1,9 @@
 import mainApi from "@/api/main_server/endpoints/root";
 
 const state = {
-    'name': 'name',
-    'email': 'email@mail.ru',
-    'phone': '89041683641',
+    'name': null,
+    'email': null,
+    'phone': null,
     'address': null,
     'comment': null,
 
@@ -57,7 +57,6 @@ const actions = {
                 dispatch('shop/cart/clearCart', {}, {root:true})
                 commit('setLastOrderNumber', res.data.id)
             })
-            // TODO validation
     },
 }
 

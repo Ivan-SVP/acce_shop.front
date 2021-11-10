@@ -109,11 +109,17 @@ const mutations = {
         updateCartItemsOfLocalStorage(state.cartItems)
     },
     refreshCartItems (state, products) {
-        products.forEach(function (prod){  // TODO убирать/обнулять, которые не пришли
-            let currentItem = state.cartItems.find(cartItem => cartItem.product.slug === prod.slug)
-            currentItem.product = prod
-            if (currentItem.quantity > prod.quantity) {
-                currentItem.quantity = prod.quantity
+        state.cartItems.forEach(function (cartItem){
+            let product = products.find(prod => prod.slug === cartItem.product.slug)
+            if (product) {
+                cartItem.product = product
+                if (cartItem.quantity > product.quantity) {
+                    cartItem.quantity = product.quantity
+                } else if (cartItem.quantity === 0) {
+                    cartItem.quantity = 1
+                }
+            } else {
+                cartItem.quantity = 0
             }
         })
         updateCartItemsOfLocalStorage(state.cartItems)
