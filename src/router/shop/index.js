@@ -18,14 +18,12 @@ const shop_routes = [
                 meta: {'pageTitle': 'Карточка товара'},
                 component: () => import('../../views/shop/ProductDetail'),
             },
-
             {
                 path: 'cart',
                 name: 'cart',
                 meta: {'pageTitle': 'Корзина'},
                 component: () => import('../../views/shop/Cart'),
             },
-
             {
                 path: 'checkout',
                 name: 'checkout',
@@ -36,6 +34,18 @@ const shop_routes = [
                 path: 'thank-you',
                 name: 'thank-you',
                 component: () => import('../../views/shop/ThankYou'),
+            },
+            {
+                path: 'contacts',
+                name: 'contacts',
+                meta: {'pageTitle': 'Контакты'},
+                component: () => import('../../views/shop/Contacts'),
+            },
+            {
+                path: 'about',
+                name: 'about',
+                meta: {'pageTitle': 'О нас'},
+                component: () => import('../../views/shop/About'),
             },
         ],
     },

@@ -323,7 +323,7 @@
         };
 
         let navLinks = [
-          {title: 'Главная', path: '/'},
+          // {title: 'Главная', path: '/'},
           {title: 'Каталог', path: '/catalog'},
           {title: 'Контакты', path: '/contacts'},
           {title: 'О нас', path: '/about'},
