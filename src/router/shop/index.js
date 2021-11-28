@@ -9,23 +9,27 @@ const shop_routes = [
             {
                 path: 'catalog',
                 name: 'main-catalog',
+                meta: {'pageTitle': 'Каталог'},
                 component: () => import('../../views/shop/MainCatalog'),
             },
             {
                 path: 'shop/:productSlug',
                 name: 'product-detail',
+                meta: {'pageTitle': 'Карточка товара'},
                 component: () => import('../../views/shop/ProductDetail'),
             },
 
             {
                 path: 'cart',
                 name: 'cart',
+                meta: {'pageTitle': 'Корзина'},
                 component: () => import('../../views/shop/Cart'),
             },
 
             {
                 path: 'checkout',
                 name: 'checkout',
+                meta: {'pageTitle': 'Оформление заказа'},
                 component: () => import('../../views/shop/Checkout'),
             },
             {

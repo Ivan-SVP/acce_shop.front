@@ -42,7 +42,9 @@
         <div class="row align-items-center">
           <div class="col-lg-2 col-md-4 col-5">
             <div class="logo-area">
-              <a href="index.html"><img src="assets/images/logo/logo.png" alt=""></a>
+              <router-link :to="{name: 'shop'}">
+                <img src="assets/images/logo/horizontal_on_white_by_logaster.png" alt="">
+              </router-link>
             </div>
           </div>
           <div class="col-lg-8 d-none d-lg-block">
