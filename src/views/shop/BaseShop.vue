@@ -21,6 +21,6 @@
 
 <style>
   .active {
-    color: #ff5151;
+    color: #1117a3;
   }
 </style>

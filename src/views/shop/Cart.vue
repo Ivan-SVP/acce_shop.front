@@ -107,4 +107,10 @@
 .table-content table td{
   width: 140px;
 }
+.proceed-checkout-btn{
+  background: #930000;
+}
+.btn::before{
+  background-color: transparent;
+}
 </style>
