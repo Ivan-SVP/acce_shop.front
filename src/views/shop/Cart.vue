@@ -46,7 +46,7 @@
                 <div class="coupon-all">
 
                   <div class="coupon2">
-                    <router-link :to="{name: 'shop'}"  class="btn continue-btn">Вернуться в магазин</router-link>
+                    <router-link :to="{name: 'shop', query: queryFilters}"  class="btn continue-btn">Вернуться в магазин</router-link>
                   </div>
 
                 </div>
@@ -91,6 +91,8 @@
       let cartTotal = computed(() => store.getters["shop/cart/getCartTotal"]);
       let cartTotalFull = computed(() => store.getters["shop/cart/getCartTotalWithoutDiscount"]);
 
+      let queryFilters = store.getters["shop/productList/getFiltersQuery"]
+
       store.dispatch('shop/cart/refreshCartItems')
       return {
         cartItemList,
@@ -98,6 +100,7 @@
         setToCart,
         cartTotal,
         cartTotalFull,
+        queryFilters,
       }
     },
   }
