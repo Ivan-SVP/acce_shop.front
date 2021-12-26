@@ -1,0 +1,14 @@
+version: "3"
+services:
+  web:
+    image: registry.gitlab.com/acce_shop/acce_shop-front:${CI_BUILD_REF_NAME}
+    build:
+      context: .
+    restart: 'no'
+    volumes:
+      - front_static:/usr/src/app
+
+
+volumes:
+  front_static:
+    external: true
