@@ -13,7 +13,7 @@ const getDefaultState = () => {
         // сортировка, фильтры, поиск
         sortBy: 'title',
 
-        category: 'category-1',
+        category: null,
 
         minPrice: null,  // границы слайдера цен
         maxPrice: null,
