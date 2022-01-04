@@ -1,12 +1,10 @@
 <template>
   <div class="main-wrapper">
-    <!--        header-->
+    <!--    header-->
     <Header/>
     <!--    content-->
-
     <router-view/>
-
-    <!--        footer-->
+    <!--    footer-->
     <Footer/>
   </div>
 </template>
@@ -24,4 +22,15 @@
 </script>
 
 <style scoped>
+  .main-wrapper {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+  }
+  .content-container {
+    flex: 1 0 auto;
+  }
+  .footer {
+    flex: 0 0 auto;
+  }
 </style>

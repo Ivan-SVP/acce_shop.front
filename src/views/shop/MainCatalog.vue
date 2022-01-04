@@ -42,5 +42,7 @@
 </script>
 
 <style scoped>
-
+  .section-ptb {
+    padding-top: 30px;
+  }
 </style>
