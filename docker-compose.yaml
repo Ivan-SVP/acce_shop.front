@@ -6,8 +6,8 @@ services:
       context: .
     restart: 'no'
     volumes:
-      - front_static:/usr/src/app
-
+      - front_static:/usr/src/frontend/
+    command: bash -c "cp -rf /usr/src/app/outputData/dist /usr/src/frontend/"
 
 volumes:
   front_static:

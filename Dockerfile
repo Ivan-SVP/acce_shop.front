@@ -1,15 +1,22 @@
-FROM node:16.13.1-alpine
+FROM node:16.13.2
 
-RUN mkdir -p /usr/src/app
+WORKDIR /usr/src/app/inputData
+RUN mkdir /usr/src/frontend/
 
-WORKDIR /usr/src/app
-ADD . /usr/src/app
+COPY package*.json ./
 RUN npm install
 
+COPY . .
 ENV NODE_ENV=production
-
 RUN npm run build
 
 # Remove unused directories
-RUN rm -rf ./src
-RUN rm -rf ./build
+RUN rm -rf /usr/src/app/inputData
+
+
+RUN useradd --home-dir /home/admin --create-home --uid 5000 --gid 33 --shell /bin/sh admin
+
+RUN chown -R admin /usr/src/app/outputData \
+    && chown -R admin /usr/src/frontend
+
+USER admin

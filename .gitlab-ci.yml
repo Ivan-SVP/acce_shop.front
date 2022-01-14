@@ -8,6 +8,7 @@ before_script:
 stages:
   - build
   - deploy
+  - cleanup
 
 build:
     stage: build
@@ -24,4 +25,10 @@ deploy:
     only:
       - master
     script:
-      - docker-compose up -d
+      - docker-compose run web
+
+cleanup:
+  stage: cleanup
+  script:
+    - docker rm $(docker ps -aq -f status=exited) || echo "fail"
+    - docker rmi $(docker images -f dangling=true -q) || echo "fail"
