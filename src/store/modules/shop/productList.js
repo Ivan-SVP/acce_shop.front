@@ -6,7 +6,7 @@ const getDefaultState = () => {
 
         paginator: {
             'currentPage': 1,
-            'page_size': 20,
+            'page_size': 16,
             'count': 0,
         },
 
@@ -160,7 +160,7 @@ const mutations = {
     },
     updatePaginator (state, params) {
         state.paginator['count'] = params.count || 0
-        state.paginator['page_size'] = params.page_size || 20
+        state.paginator['page_size'] = params.page_size || 16
     },
     setCurrentPage (state, page) {
         state.paginator['currentPage'] = page
