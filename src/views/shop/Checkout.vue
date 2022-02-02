@@ -167,18 +167,28 @@
 
       let orderError = ref('');
       async function createOrder(){
-        try {
-          if (!name.value || !email.value || !phone.value) {
-            orderError.value = 'Заполните обязательные поля!'
-            return
-          }
-
-          await store.dispatch('shop/checkout/createOrder')
-          orderError.value = ''
-          await router.push({'name': 'thank-you'})
-        } catch (error) {
-          orderError.value = 'Произошла непредвиденная ошибка, не удалось создать заказ.'
+        if (!name.value || !email.value || !phone.value) {
+          orderError.value = 'Заполните обязательные поля!'
+          return
         }
+        if (length.cartItemList < 1) {
+          orderError.value = 'Заказ не может быть пустым.'
+          return
+        }
+
+        await store.dispatch('shop/checkout/createOrder').then(
+            () => {
+              orderError.value = ''
+              router.push({'name': 'thank-you'})
+            }, error => {
+              let error_message = error.response.data['order_items']
+              if (!error_message) {
+                orderError.value = 'Произошла непредвиденная ошибка, не удалось создать заказ.'
+              } else {
+                orderError.value = String(error_message)
+              }
+            }
+        )
       }
 
       store.dispatch('shop/cart/refreshCartItems')

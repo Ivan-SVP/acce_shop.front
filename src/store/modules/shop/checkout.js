@@ -51,10 +51,9 @@ const actions = {
         let checkoutData = getters['getCheckoutData'];
         Object.assign(checkoutData, rootGetters["shop/cart/getCartDataForBackend"])
 
-        await mainApi.createOrder(checkoutData)
+        return await mainApi.createOrder(checkoutData)
             .then(res => {
-                console.log(res)
-                dispatch('shop/cart/clearCart', {}, {root:true})
+                dispatch('shop/cart/clearCart', {}, {root: true})
                 commit('setLastOrderNumber', res.data.id)
             })
     },
