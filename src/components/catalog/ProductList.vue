@@ -54,7 +54,6 @@
                         <a v-if="!isProductInCart(product)" @click.prevent="addToCart(product)" class="add-to-cart"><i class="ion-bag"></i></a>
                         <a v-else @click.prevent="removeFromCart(product)" class="add-to-cart"><i class="ion-close"></i></a>
 
-                        <a href="#" class="wishlist"><i class="ion-android-favorite-outline"></i></a>
                         <a href="#" class="quick-view" data-toggle="modal" data-target="#exampleModalCenter"><i class="ion-ios-search"></i></a>
                       </div>
                     </div>
