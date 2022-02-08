@@ -38,7 +38,7 @@ const getters = {
         return [
             {'key': 'title', 'value': 'А-Я'},
             {'key': '-title', 'value': 'Я-А'},
-            {'key': 'price', 'value': 'Сначала дешвле'},
+            {'key': 'price', 'value': 'Сначала дешевле'},
             {'key': '-price', 'value': 'Сначала дороже'},
         ]
     },
