@@ -69,7 +69,10 @@
             <!-- product-quantity-action end -->
             <!-- pro_dtl_btn start -->
             <ul class="pro_dtl_btn">
-              <li><a href="#" class="buy_now_btn" @click.prevent="addToCart">в корзину</a></li>
+              <li>
+                <a href="#" class="buy_now_btn" @click.prevent="addToCart">в корзину</a>
+                <span v-if="cartItem" class="text-success"> ({{cartItem.quantity}} уже в корзине)</span>
+              </li>
   <!--            <li><a href="#"><i class="ion-heart"></i></a></li>-->
             </ul>
             <!-- pro_dtl_btn end -->
@@ -135,7 +138,7 @@
         store.dispatch('shop/cart/addToCart', {'product': product.value, 'quantity': quantity.value})
       }
 
-      let getCartItem = (slug) => store.getters["shop/cart/getCartItem"](slug)
+      let cartItem = computed(() => store.getters["shop/cart/getCartItem"](product.value.slug))
 
       let countProductsAvailable = computed(function () {
         if (!product) {
@@ -146,9 +149,9 @@
         if (!p.quantity) {
           return 0
         }
-        let cartItem = getCartItem(p.slug)
-        if (cartItem) {
-          let qty = p.quantity - cartItem.quantity
+
+        if (cartItem.value) {
+          let qty = p.quantity - cartItem.value.quantity
           if (qty === 0) {
             quantity.value = 0
           } else {
@@ -173,6 +176,7 @@
         quantity,
         addToCart,
         countProductsAvailable,
+        cartItem,
       }
     },
   }
@@ -181,5 +185,8 @@
 <style scoped>
 .product-quantity-action .product-quantity input {
   width: 60px;
+}
+.buy_now_btn{
+  display: inline-block;
 }
 </style>
