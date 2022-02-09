@@ -37,7 +37,7 @@
           <div class="tab-pane active" id="grid">
             <div class="shop-product-wrap">
               <div class="row" v-if="productList.length">
-                <div class="col-lg-3 col-md-4 col-sm-6 col-"
+                <div class="col-lg-3 col-md-4 col-sm-6 col-6"
                      v-for="product in productList"
                      :key="product.id"
                 >
